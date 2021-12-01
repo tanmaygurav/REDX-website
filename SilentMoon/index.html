@@ -2,6 +2,7 @@
  <!DOCTYPE html>
  <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SilentMoon</title>
         <style>
         #indexTitle {
@@ -40,8 +41,8 @@
             (e.onload = () => {
                 window.WebChat.default(
                 {
-                    initPayload: "/greet",
                     title: "SilentMoon",
+                    subtitle: "Say hi to get started!",
                     profileAvatar: "",
                     customData: { language: "en" },
                     socketUrl: "https://8b11-111-119-197-122.ngrok.io", //192.168.0.107  //http://localhost:5005  //https://dc59-111-119-197-122.ngrok.io 
@@ -49,6 +50,7 @@
                     hideWhenNotConnected: false,
                     // add other props here
                     // subtitle: "Say hi to get started!",
+                    // initPayload: "/greet",
                 },
                 null
                 );
