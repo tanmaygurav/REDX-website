@@ -1,13 +1,13 @@
 
  <!DOCTYPE html>
  <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
         <title>SilentMoon</title>
         <style>
-        #indexTitle {
+        div.indexTitle {
+            padding: 35px;
             font-family: sans-serif;
-            font-size: 100px;
+            font-size: 80px;
             letter-spacing: 0px;
             word-spacing: 2px;
             color: #000000;
@@ -16,9 +16,19 @@
             font-style: normal;
             font-variant: normal;
             text-transform: none;
-            padding-left: 50px;
-            padding-top: 50px;
-            }
+        }
+
+        @media screen and (min-width: 601px) {
+        div.indexTitle {
+            font-size: 100px;
+        }
+        }
+
+        @media screen and (max-width: 600px) {
+        div.indexTitle {
+            font-size: 50px;
+        }
+        }
         </style>
     
     </head>
@@ -26,7 +36,7 @@
     <body style="background: lightcyan;">
     
     
-    <div id="indexTitle">SilentMoon</div>
+    <div class="indexTitle">SilentMoon</div>
     <div id="webchat"></div>
             
     
@@ -47,7 +57,7 @@
                     subtitle: "Say hi to get started!",
                     profileAvatar: "",
                     customData: { language: "en" },
-                    socketUrl: "https://acca-111-119-197-122.ngrok.io", //192.168.0.107  //http://localhost:5005  //https://dc59-111-119-197-122.ngrok.io 
+                    socketUrl: "https://9114-111-119-197-122.ngrok.io", //192.168.0.107  //http://localhost:5005  //https://dc59-111-119-197-122.ngrok.io 
                     socketPath: "/socket.io",
                     hideWhenNotConnected: false,
                     storage: "session",
