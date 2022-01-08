@@ -1,1 +1,1 @@
-https://redx.welingkar.org/index.html
+https://redx.welingkar.org
