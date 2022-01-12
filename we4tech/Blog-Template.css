@@ -1,14 +1,28 @@
+.u-section-b {
+  background-image: url("images/pexels-photo-6160167.jpeg");
+  background-position: 50% 50%;
+}
+
 .u-section-1 .u-sheet-1 {
   min-height: 561px;
 }
 
+.u-section-1 .u-text-t {
+  color: white;
+  font-size: 9rem;
+  background-image: none;
+  text-transform: uppercase;
+  font-weight: 100;
+  width: 570px;
+  margin: 60px auto 0;
+}
+
 .u-section-1 .u-repeater-1 {
-  margin-top: 60px;
+  margin-top: 0px;
   margin-bottom: 60px;
-  min-height: 441px;
-  grid-template-columns: calc(33.3333% - 15px) calc(33.3333% - 15px) calc(33.3333% - 15px);
-  height: auto;
-  grid-gap: 22px;
+  min-width: 250px;
+  grid-template-columns: calc(50% - 15px) calc(50% - 15px);
+  grid-gap: 30px;
 }
 
 .u-section-1 .u-repeater-item-1 {
@@ -25,7 +39,7 @@
 }
 
 .u-section-1 .u-image-1 {
-  height: 222px;
+  min-height: 250px;
   margin-top: 17px;
   margin-bottom: 0;
 }
@@ -52,7 +66,7 @@
 }
 
 .u-section-1 .u-image-2 {
-  height: 222px;
+  min-height: 250px;
   margin-top: 17px;
   margin-bottom: 0;
 }
@@ -79,7 +93,7 @@
 }
 
 .u-section-1 .u-image-3 {
-  height: 222px;
+  min-height: 250px;
   margin-top: 17px;
   margin-bottom: 0;
 }
@@ -103,7 +117,7 @@
 
   .u-section-1 .u-repeater-1 {
     min-height: 364px;
-    grid-template-columns: repeat(3, calc(33.333333333333336% - 15px));
+    grid-template-columns: repeat(2, calc(50% - 15px));
   }
 }
 
@@ -114,11 +128,16 @@
 
   .u-section-1 .u-repeater-1 {
     min-height: 836px;
-    grid-template-columns: repeat(2, calc(50% - 11.25px));
+    grid-template-columns: repeat(2, calc(50% - 15px));
   }
 }
 
 @media (max-width: 767px) {
+  .u-section-1 .u-text-t {
+    font-size: 4.5rem;
+    width: 340px;
+  }
+
   .u-section-1 .u-repeater-1 {
     grid-template-columns: 100%;
   }
@@ -129,7 +148,7 @@
   }
 
   .u-section-1 .u-image-1 {
-    height: 278px;
+    min-height: 250px;
   }
 
   .u-section-1 .u-container-layout-2 {
@@ -138,7 +157,7 @@
   }
 
   .u-section-1 .u-image-2 {
-    height: 278px;
+    min-height: 250px;
   }
 
   .u-section-1 .u-container-layout-3 {
@@ -147,6 +166,7 @@
   }
 
   .u-section-1 .u-image-3 {
-    height: 278px;
+    min-height: 250px;
   }
 }
+
