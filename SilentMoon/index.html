@@ -1,19 +1,21 @@
 
  <!DOCTYPE html>
  <html lang="en">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+    <head>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
         <title>SilentMoon</title>
         <style>
         .rw-conversation-container .rw-image-frame {
             max-width: 300px;
         }
+
         .rw-conversation-container .rw-messages-container .rw-videoFrame{
             width:300px;
             height:300px;
             margin-top:0px;
             border:none
         }
-         
+
         div.indexTitle {
             padding: 35px;
             font-family: sans-serif;
@@ -40,26 +42,26 @@
         }
         }
         </style>
-    
+        
+        
     </head>
        
     <body style="background: lightcyan;">
     
     
     <div class="indexTitle">SilentMoon</div>
-    <div id="webchat"></div>
+    <div id="webchat" style="max-width: 100%; max-height: 100%;"></div>
             
     
     <script>
         !(function () {
             let e = document.createElement("script"),
             t = document.head || document.getElementsByTagName("head")[0];
-            (e.src =
-            "https://cdn.jsdelivr.net/npm/rasa-webchat@1.0.1/lib/index.js"),
+            (e.src = "https://cdn.jsdelivr.net/npm/rasa-webchat@1.0.1/lib/index.js"),
             // Replace 1.x.x with the version that you want
             (e.async = !0),
             (e.onload = () => {
-                window.localStorage.clear();
+                //window.localStorage.clear();
                 window.WebChat.default(
                 {
                     initPayload: "/greet",
@@ -67,13 +69,11 @@
                     subtitle: "Say hi to get started!",
                     profileAvatar: "",
                     customData: { language: "en" },
-                    socketUrl: "https://7f6e-111-119-197-122.ngrok.io", //192.168.0.107  //http://localhost:5005  //https://dc59-111-119-197-122.ngrok.io 
+                    socketUrl: "https://eb4b-111-119-197-118.ngrok.io", //192.168.0.107  //http://localhost:5005  //https://dc59-111-119-197-122.ngrok.io 
                     socketPath: "/socket.io",
                     hideWhenNotConnected: false,
-                    storage: "session",
+                    storage: "local",
                     // add other props here
-                    // subtitle: "Say hi to get started!",
-                    // initPayload: "/greet",
                 },
                 null
                 );
@@ -81,7 +81,6 @@
             t.insertBefore(e, t.firstChild);
         })();
         </script>
-    
     
     </body>
   </html>
