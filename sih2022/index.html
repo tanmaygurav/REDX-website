@@ -27,23 +27,36 @@
     <meta property="og:type" content="website">
 
     <style type="text/css">
-      #logo1 {display:inline-block;
+      .logo1 {display:inline-block;
+              min-height: 25px; 
+              max-height: 80px;
               margin-right: 20px;
               margin-top: 20px;}
-      #logo2 {display:inline-block;
-              margin-top: 20px;}
-      #logo3 {display:inline-block;
+      .logo2 {display:inline-block;
+              margin-top: 20px;
+              min-height: 25px;
+              max-height: 80px;}
+      .logo3 {display:inline-block;
               margin-left: 20px;
-              margin-top: 30px;}
+              margin-top: 20px;
+              min-height: 25px;
+              max-height: 80px;}
+      @media screen and (max-width: 500px) {
+      .logo1,
+      .logo2,
+      .logo3{
+        max-height: 50px;}
+    }
+
     </style>
 
   </head>
   <body class="u-body">
     <header class="u-clearfix u-header u-header" id="sec-6f85"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <a href="index.html">
-          <div id="logo1"><img src="images/sihlogo.png" style="min-height: 50px; max-height: 80px;"></div>
-          <div id="logo2"><img src="images/iiclogo.png" style="min-height: 50px; max-height: 80px;"></div>
-          <div id="logo3"><img src="images/weS.jpg" style="min-height: 50px; max-height: 75px;" ></div>
+          <img class="logo1" src="images/sihlogo.png">
+          <img class="logo2" src="images/iiclogo.png">
+          <img class="logo3" src="images/weS.jpg">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
           <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
@@ -147,7 +160,7 @@
               <div class="u-container-style u-layout-cell u-size-23 u-layout-cell-2">
                 <div class="u-container-layout u-valign-middle-xl u-container-layout-2">
                   
-                  <img id="myImg" src="images/banner.png" alt="Poster" style="min-width:100px; ">
+                  <img id="myImg" src="images/banner.png" alt="Poster" style="width: 110%; min-width:200px">
 
                   <!-- The Modal -->
                   <div id="myModal" class="modal">
