@@ -1,4 +1,5 @@
 #myImg {
+  width: 175%;
   border-radius: 5px;
   cursor: pointer;
   transition: 0.3s;
@@ -79,6 +80,13 @@
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
+  #myImg {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .modal-content {
     width: 100%;
   }
@@ -295,6 +303,13 @@
 }
 
 @media (max-width: 1199px) {
+  #myImg {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .u-section-1 .u-sheet-1 {
     min-height: 517px;
   }
@@ -329,6 +344,13 @@
 }
 
 @media (max-width: 991px) {
+  #myImg {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .u-section-1 .u-sheet-1 {
     min-height: 228px;
   }
@@ -391,6 +413,13 @@
 }
 
 @media (max-width: 767px) {
+  #myImg {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .u-section-1 .u-sheet-1 {
     min-height: 328px;
   }
@@ -416,6 +445,13 @@
 }
 
 @media (max-width: 575px) {
+  #myImg {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .u-section-1 .u-text-2 {
     font-size: 2.25rem;
   }
