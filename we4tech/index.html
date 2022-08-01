@@ -27,12 +27,38 @@
     <meta name="theme-color" content="#478ac9">
     <meta property="og:title" content="Home">
     <meta property="og:type" content="website">
+  
+    <style type="text/css">
+      #block{
+        display:inline;
+      }
+      .logo {display:flex;
+        align-items: flex-start;
+              min-height: 10px; 
+              max-height: 30px;
+              margin-right: 20px;
+              margin-top: 0px;
+              margin-bottom: 50px;
+            }
+
+      @media screen and (max-width: 500px) {
+      .logo{
+        max-height: 50px;}
+    }
+
+    </style>
+  
   </head>
   <body class="u-body">
     <header class="u-clearfix u-header u-header" id="sec-6f85"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-        <a href="index.html" class="u-image u-logo u-image-1">
-          <img src="images/LOGO.jpeg" class="u-logo-image u-logo-image-1" style="width: 200px;">
+    <div class="logo">
+      <a href="../index.html" class="u-image u-logo u-image-1" style="margin-top: 40px;">
+        <img class="logo" src="images/redxlogo.png">
+      </a>
+      <a href="index.html" class="u-image u-logo u-image-1">
+          <img src="images/LOGO.jpeg" class="u-logo-image u-logo-image-1" style="width: 200px; margin-right: 666px;">
         </a>
+      </div>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
           <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
             <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
@@ -72,10 +98,12 @@
             <div class="u-layout-row">
               <div class="u-align-center-sm u-align-center-xs u-container-style u-layout-cell u-size-37 u-layout-cell-1" style="width:450px;">
                 <div class="u-container-layout u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-container-layout-1">
-                  <h4 class="u-text u-text-body-alt-color u-text-default u-text-1"  style="font-size:150%;" >We4Tech</h4>
-                  <h2 class="u-text u-text-body-alt-color u-text-3">See you next year!</h2>
-                  <!--<div class="u-countdown u-countdown-1" data-timer-id="2500000000" data-type="to-date" data-target-date="Mon, 23 Jan 2022 18:30:00 GMT" data-for="everyone" data-direction="down" data-time-left="750m" data-target-number="100" data-start-time="Thu Jan 06 2022 14:07:34 GMT+0530 (India Standard Time)" data-frequency="1s">
-                    
+                  <!--<h4 class="u-text u-text-body-alt-color u-text-default u-text-1"  style="font-size:150%;" >We4Tech</h4>
+                  <h2 class="u-text u-text-body-alt-color u-text-3">See you next year!</h2>-->
+                  
+                  <div class="u-countdown u-countdown-1" data-timer-id="2500000000" data-type="to-date" data-target-date="Mon, 3 Aug 2022 18:30:00 GMT" data-for="everyone" data-direction="down" data-time-left="750m" data-target-number="100" data-start-time="Thu Jan 06 2022 14:07:34 GMT+0530 (India Standard Time)" data-frequency="1s">
+                    <h2 class="u-text u-text-body-alt-color u-text-3"><a href="https://docs.google.com/forms/d/e/1FAIpQLScbjuKXGCV2O6LHD7jt5CDEOgdMf_bJZGvZpNhcua02FYtSYw/viewform" style="font-size:75%;" >Click here to Register now!</a></h2>
+                   
                     <div class="u-countdown-wrapper u-spacing-20">
                       <div class="u-countdown-item u-countdown-years u-hidden u-spacing-10 u-countdown-item-1">
                         <div class="u-countdown-counter u-countdown-counter-1"><span class="u-countdown-number u-text-palette-3-base">0</span><span class="u-countdown-number u-hidden u-text-palette-3-base">0</span></div>
@@ -111,10 +139,17 @@
                       <p>Sorry, the time is up.</p>
                       <p>It's time.</p>
                     </div>
-                  </div>-->
+                  </div>
                   <br><br>
 
-                  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTEWeqGrtfBNcSaogpZc0B7ZUAGIepRn5yX1xwuqB6Gbi17pdbPZFoBUUZL1NJYvjawhtWCXZbKns9Q/embed?start=true&loop=true&delayms=5000" frameborder="0" width="700" height="400" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                  <!--<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTEWeqGrtfBNcSaogpZc0B7ZUAGIepRn5yX1xwuqB6Gbi17pdbPZFoBUUZL1NJYvjawhtWCXZbKns9Q/embed?start=true&loop=true&delayms=5000" frameborder="0" width="700" height="400" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>-->
+                  <video controls width="100%" autoplay muted>
+                
+                    <source src="images/We4tech2.0-Teaservid.mp4"
+                            type="video/mp4">
+                
+                    Sorry, your browser doesn't support embedded videos.
+                  </video>
                   
                   <!--<h2 class="u-text u-text-body-alt-color u-text-3"><a href="https://docs.google.com/forms/d/e/1FAIpQLScbjuKXGCV2O6LHD7jt5CDEOgdMf_bJZGvZpNhcua02FYtSYw/viewform" style="font-size:75%;" >Click here to Register now!</a></h2>
                   <br><br>
@@ -135,7 +170,7 @@
                 <div class="u-container-layout u-valign-middle-xl u-container-layout-2">
                   <br>
 
-                  <img id="myImg" src="images/poster.jpg" alt="Poster" style="width: 100%; min-width:200px">
+                  <img id="myImg" src="images/FF-aug-22-01-01.jpg" alt="Poster" style="width: 130%; min-width:300px">
 
                   <!-- The Modal -->
                   <div id="myModal" class="modal">
@@ -159,7 +194,6 @@
       <!--<a class="u-link" href="https://docs.google.com/forms/d/e/1FAIpQLScbjuKXGCV2O6LHD7jt5CDEOgdMf_bJZGvZpNhcua02FYtSYw/viewform" target="_blank">
         <span>Register Now!</span>
       </a>-->
-      <br>
       <a class="u-link" href="tracks.html">
         <span>Tracks</span>
       </a>
@@ -167,7 +201,7 @@
       <a class="u-link" href="About.html">
         <span>Frequently asked questions (FAQ)</span>
       </a>
-      <br><br>
+      <br>
       <!--<p class="u-text">
         <span> using </span>
       </p>
