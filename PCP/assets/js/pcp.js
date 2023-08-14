@@ -4,7 +4,7 @@ const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tM
 getUser()
 var user
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
-if (window.location.pathname == "/PCP/pcphome.html") {
+if (window.location.pathname == "/PCP/pcpHome.html") {
     getPS()
     loadfilters()
 }
@@ -248,11 +248,11 @@ async function refreshDS() {
                 </div>
             </div>
             <div  class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <label for="remarkedittext" class="form-label title">Remarks</label>
+                <textarea class="form-control description" id="remarkedittext" rows="3"></textarea>
                 <div  class="mt-3 mb-3">
                     <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick="saveremark(${res.uid})">Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
@@ -263,7 +263,26 @@ async function refreshDS() {
 }
 
 async function saveremark(uuid) {
-    user.user
+    console.log("info","saveremark clicked");
+    var remarkedittext=document.getElementById("remarkedittext")
+    var remark = remarkedittext.value
+    console.log("uuid",uuid);
+    data = {
+        url: v200,
+        params: {
+            'code': 'remark',
+            'uuid': uuid,
+            'givenby': user.user.name,
+            'remark': document.getElementById("remarkedittext").value,
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    if (response.status != 200) alert("Request returnde status code", res.status);
+    if (response.status === 200) {
+        getremarks(uuid)
+    }
 }
 
 async function getremarks(uuid) {
@@ -282,6 +301,7 @@ async function getremarks(uuid) {
     if (response.status === 200) {
         console.log("remarks", res);
         RemarksSection.innerHTML = ""
+        
         res.forEach(i => {
             RemarksSection.innerHTML += `
             <div class="card shadow p-2">
@@ -375,11 +395,11 @@ async function displayPS(uuid) {
                 </div>
             </div>
             <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <label for="remarkedittext" class="form-label title">Remarks</label>
+                <textarea class="form-control description" id="remarkedittext" rows="3"></textarea>
                 <div class="mt-3 mb-3">
                     <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn">Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
