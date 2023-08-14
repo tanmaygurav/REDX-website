@@ -2,18 +2,21 @@ const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tM
 // const crypto = require()
 /* Onpage load triggers */
 getUser()
-
+var user
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
+if (window.location.pathname == "/PCP/pcphome.html") {
+    getPS()
+    loadfilters()
+}
 
 /* Onpage load triggers */
 function getUser() {
-    const user = JSON.parse(sessionStorage.getItem("user"))
+    user = JSON.parse(sessionStorage.getItem("user"))
     // console.log("user", user.user);
     if (user) {
         var displayName = document.getElementById("profile-name")
         displayName.innerText = user.user.name
-        getPS()
-        loadfilters()
+
     } else {
         alert("Could not fetch user, Please try Logining IN again or use a different browser")
         window.location = "http://127.0.0.1:5500/pcpauth.html"
@@ -23,7 +26,7 @@ function getUser() {
 
 function logout() {
     sessionStorage.removeItem("user")
-    window.location = "http://127.0.0.1:5500/pcpauth.html"
+    window.location = "/PCP/pcpauth.html"
     // window.location="redx.welingkar.org/pcpauth.html"
 }
 
@@ -191,7 +194,7 @@ async function markstatus(uuid, status) {
         }
 }
 
-async function refreshDS(){
+async function refreshDS() {
     const rightpane = document.getElementById("rightpane")
     data = {
         url: v200,
@@ -244,17 +247,52 @@ async function refreshDS(){
                     </div>
                 </div>
             </div>
-            <div class="mb-3">
+            <div  class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label title">Remarks</label>
                 <textarea class="form-control description" id="exampleFormControlTextarea1" rows="3"></textarea>
-                <div class="mt-3 mb-3">
+                <div  class="mt-3 mb-3">
                     <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn">Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick="saveremark(${res.uid})">Save</button>
                 </div>
-                <div class="card shadow p-2">remarks 1</div>
+                <div id="RemarksSection"></div>
             </div>
         </div>
         `
+        getremarks(res.uuid)
+    }
+}
+
+async function saveremark(uuid) {
+    user.user
+}
+
+async function getremarks(uuid) {
+    const RemarksSection = document.getElementById("RemarksSection")
+    data = {
+        url: v200,
+        params: {
+            'code': 'readremarks',
+            'uuid': uuid,
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    if (response.status != 200) alert("Request returnde status code", res.status);
+    if (response.status === 200) {
+        console.log("remarks", res);
+        RemarksSection.innerHTML = ""
+        res.forEach(i => {
+            RemarksSection.innerHTML += `
+            <div class="card shadow p-2">
+                <div class="d-flex flex-row">
+                    <div class="title-left">${i.givenby} : </div><div class="title-left">${i.remark}</div>
+                </div>
+            <div class="title-left">${i.timestamp}</div>
+            </div>
+            `
+        })
+
     }
 }
 /* Home right pane */
@@ -343,14 +381,19 @@ async function displayPS(uuid) {
                     <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
                     <button type="button" class="btn btn-outline-primary shadow remarkbtn">Save</button>
                 </div>
-                <div class="card shadow p-2">remarks 1</div>
+                <div id="RemarksSection"></div>
             </div>
         </div>
         `
+        getremarks(res.uuid)
 
-        const tag=res.tag
+        const tag = res.tag
         if (tag == 1) {
-            var btnsol=document.getElementById("solvedbtn")
+            var btnsol = document.getElementById("solvedbtn")
+            btnsol.classList.add("active")
+        }
+        if (tag == 0) {
+            var btnsol = document.getElementById("unsolvedbtn")
             btnsol.classList.add("active")
         }
     }
@@ -358,5 +401,16 @@ async function displayPS(uuid) {
 
 }
 
+function accessrequests() {
+    if (user) {
+        if (user.user.acces_status == "ADMIN") {
+            alert("Redirected")
+            window.location = "/PCP/pcprequest.html"
+        } else {
+            alert("Access Denied")
+            console.log("user", user)
+        }
+    } else { alert("user not found") }
+}
 
 /* Abstraction */

@@ -88,13 +88,13 @@ html body {
 }
 
 .svg-yellow {
-    background-image: url('/assets/img/yellow.svg');
+    background-image: url('../img/yellow.svg');
     background-repeat: no-repeat;
     background-position: right center;
 }
 
 .svg-green {
-    background-image: url('/assets/img/green.svg');
+    background-image: url('../img/green.svg');
     background-repeat: no-repeat;
     background-position: right center;
 }
