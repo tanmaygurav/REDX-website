@@ -249,10 +249,10 @@ async function refreshDS() {
             </div>
             <div  class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="remarkedittext" rows="3"></textarea>
-                <div  class="mt-3 mb-3">
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick=saveremark(${String(res.uuid)})>Save</button>
+                <textarea class="form-control description" id="remarkedittext" rows="3" disabled=true>Under Development</textarea>
+                <div  class="mt-3 mb-3" >
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true>Edit</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
@@ -263,10 +263,10 @@ async function refreshDS() {
 }
 
 async function saveremark(uuid) {
-    console.log("info","saveremark clicked");
-    var remarkedittext=document.getElementById("remarkedittext")
+    console.log("info", "saveremark clicked");
+    var remarkedittext = document.getElementById("remarkedittext")
     var remark = remarkedittext.value
-    console.log("uuid",uuid);
+    console.log("uuid", uuid);
     data = {
         url: v200,
         params: {
@@ -299,16 +299,20 @@ async function getremarks(uuid) {
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-        console.log("remarks", res);
+        console.log("before sort remarks", res);
+
+        res.sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); })
+        console.log("after sort remarks", res);
+
         RemarksSection.innerHTML = ""
-        
+
         res.forEach(i => {
             RemarksSection.innerHTML += `
             <div class="card shadow p-2">
                 <div class="d-flex flex-row">
-                    <div class="title-left">${i.givenby} : </div><div class="title-left">${i.remark}</div>
+                    <div class="title">${i.givenby} : &nbsp </div><div class="title-left"> ${i.remark}</div>
                 </div>
-            <div class="title-left">${i.timestamp}</div>
+            <div class="description" style="font-size:8px">${i.timestamp}</div>
             </div>
             `
         })
@@ -396,10 +400,10 @@ async function displayPS(uuid) {
             </div>
             <div class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="remarkedittext" rows="3"></textarea>
+                <textarea class="form-control description" id="remarkedittext" rows="3" disabled=true>Under Development</textarea>
                 <div class="mt-3 mb-3">
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn">Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" onclick=saveremark(${String(res.uuid)})>Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true>Edit</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
