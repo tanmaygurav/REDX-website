@@ -64,7 +64,7 @@ html body {
 .scrollable-container {
     flex: 1;
     overflow-y: scroll;
-    border: 1px solid #ff0202;
+    /* border: 1px solid #ff0202; */
     height: 85dvh;
     padding: 1vh;
 }

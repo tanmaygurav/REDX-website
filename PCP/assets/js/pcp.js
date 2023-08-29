@@ -428,8 +428,9 @@ async function displayPS(uuid) {
 function accessrequests() {
     if (user) {
         if (user.user.acces_status == "ADMIN") {
-            alert("Redirected")
-            window.location = "/PCP/pcprequest.html"
+            alert("Under Development")
+            // alert("Redirected")
+            // window.location = "/PCP/pcprequest.html"
         } else {
             alert("Access Denied")
             console.log("user", user)
