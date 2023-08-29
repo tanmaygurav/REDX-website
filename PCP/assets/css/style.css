@@ -1,0 +1,195 @@
+html body {
+    margin: 0;
+    padding: 0;
+    height: 8dvh;
+}
+
+/*--------------------------------------------------------------
+# Nav Bar
+--------------------------------------------------------------*/
+.navbar-brand {
+    color: #556270 !important;
+    font-family: Actor !important;
+    font-size: 32px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: normal !important;
+}
+
+.profile-name {
+    color: #000 !important;
+    font-family: Montserrat !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: normal !important;
+}
+
+/*--------------------------------------------------------------
+# Filter Bar
+--------------------------------------------------------------*/
+
+.filter-bar {
+    padding: 10px;
+}
+.btn.active {
+    color: #ff0202;
+}
+.dropdown-toggle {
+    color: #666;
+    font-family: Montserrat !important;
+    font-size: 12px !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    line-height: normal !important;
+}
+
+.dropdown-item {
+    color: #333;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.activefilter{
+    color: #ff0202;
+}
+
+/*--------------------------------------------------------------
+# Left pane
+--------------------------------------------------------------*/
+
+.scrollable-container {
+    flex: 1;
+    overflow-y: scroll;
+    border: 1px solid #ff0202;
+    height: 85dvh;
+    padding: 1vh;
+}
+
+.scrollable-content {
+    text-align: start !important;
+    padding-left: 5px !important;
+    border-top: 0px !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-radius: 0% !important;
+    width: 100% !important;
+    --bs-btn-border-color: #BEBEBE !important;
+    --bs-btn-active-bg: hsl(354, 72%, 95%) !important;
+    --bs-btn-active-border-color: hwb(354 14% 15%) !important;
+    margin-top: 8px;
+}
+
+.scrollable-content.active {
+    background-color: #ffd7db;
+}
+
+.svg-yellow {
+    background-image: url('../img/yellow.svg');
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+.svg-green {
+    background-image: url('../img/green.svg');
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+.title-left {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.domain-left {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+/*--------------------------------------------------------------
+# Right pane
+--------------------------------------------------------------*/
+
+.title-right {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.domain-right {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.Image-Galary {
+    height: fit-content;
+}
+
+.big-image {
+    background-color: rgb(90, 107, 106);
+    display: inline-flex;
+    height: 350px;
+    padding: 0px 5px;
+    justify-content: center;
+    align-items: flex-start;
+    width: 396px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: #FFF;
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding: 2.5px;
+}
+
+.subtitle {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding: 2.5px;
+}
+
+.description {
+    overflow: hidden;
+    color: #000;
+    text-overflow: ellipsis;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.remarkbtn{
+    width: 75px;
+    height: 35px;
+    flex-shrink: 0;
+}
