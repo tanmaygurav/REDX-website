@@ -4,6 +4,7 @@ const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tM
 getUser()
 var user
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
+var searchby = "NA"
 if (window.location.pathname == "/PCP/pcpHome.html") {
     getPS()
     loadfilters()
@@ -19,15 +20,14 @@ function getUser() {
 
     } else {
         alert("Could not fetch user, Please try Logining IN again or use a different browser")
-        window.location = "http://127.0.0.1:5500/pcpauth.html"
-        // window.location="redx.welingkar.org/pcpauth.html"
+        window.location = "/PCP/pcpauth.html"
     }
 }
 
 function logout() {
     sessionStorage.removeItem("user")
     window.location = "/PCP/pcpauth.html"
-    // window.location="redx.welingkar.org/pcpauth.html"
+
 }
 
 /* get Filters */
@@ -167,6 +167,74 @@ function applyfilter(i, divClass, case1) {
     </div>`
 }
 
+function searchbyfn(div) {
+    searchbybtn = document.getElementById("searchbybtn")
+    searchbybtn.innerText = div.innerText
+}
+
+async function search() {
+    searchbybtn = document.getElementById("searchbybtn")
+    searchcat = searchbybtn.innerText
+    console.log("searchcat", searchcat)
+    // if (!["Search By", "Student ID", "Student Name", "Title"].includes(searchcat)) alert("Please Select a Category in search by dropdown")
+    // else {
+        var searchtext = document.getElementById("searchtext").value
+        console.log("searchtext", searchtext.length);
+        // if (searchtext.length < 3) alert("Please enter atleast 3 characters")
+        // else {
+            const PSS = document.getElementById("PSS")
+            PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
+            data = {
+                url: v200,
+                params: {
+                    'code': 'readPS'
+                }
+            }
+            const query = encodeQuery(data)
+            const res = await fetch(query);
+            const PS = await res.json();
+            if (res.status != 200) alert("Request returnde status code", res.status);
+            if (res.status === 200) {
+                PSS.innerHTML = ""
+
+                const options = {
+                    includeScore: true,
+                    // Search in `author` and in `tags` array
+                    keys: ['name', 'title', 'std_ID','domain','tag']
+                }
+
+                const fuse = new Fuse(PS, options)
+                
+
+                const searchresult = fuse.search(searchtext)
+                console.log("search result",searchresult)
+                let sortedres = searchresult.sort(function (a, b) {
+                    return a.refIndex - b.refIndex
+                })
+
+                sortedres.forEach(i => {
+                    let divClass = "btn scrollable-content";
+                    if (i.item.tag === "0") {
+                        divClass = "btn scrollable-content svg-green";
+                    } else if (i.item.tag === "1") {
+                        divClass = "btn scrollable-content svg-green";
+                    }
+
+                    PSS.innerHTML +=
+                        `<div class="${divClass}" onclick="handleDivClick(this, '${i.item.uuid}')">
+                <div class="title-left">${i.item.title}</div>
+                <div class="domain-left">${i.item.domain}</div>
+                </div>` 
+                });
+
+            }
+        // }
+
+
+    // }
+
+}
+
 /* Home left pane */
 
 /* Home right pane */
@@ -244,15 +312,16 @@ async function refreshDS() {
 
                         <div class="subtitle">Possible Solution</div>
                         <div class="description">${res.d6}</div>
+                        <div class="subtitle">Student info <i class="fa-solid fa-circle-info"></i></div>
                     </div>
                 </div>
             </div>
             <div  class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="remarkedittext" rows="3" disabled=true>Under Development</textarea>
+                <textarea class="form-control description" id="remarkedittext" rows="3" ></textarea>
                 <div  class="mt-3 mb-3" >
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true>Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true onclick=saveremark(${String(res.uuid)})>Save</button>
+                    
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
@@ -299,20 +368,18 @@ async function getremarks(uuid) {
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-        console.log("before sort remarks", res);
-
-        res.sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); })
-        console.log("after sort remarks", res);
+        let sortedres = res.sort(function (a, b) {
+            return b.timestamp.localeCompare(a.timestamp)
+        })
 
         RemarksSection.innerHTML = ""
 
-        res.forEach(i => {
+        sortedres.forEach(i => {
             RemarksSection.innerHTML += `
             <div class="card shadow p-2">
                 <div class="d-flex flex-row">
                     <div class="title">${i.givenby} : &nbsp </div><div class="title-left"> ${i.remark}</div>
                 </div>
-            <div class="description" style="font-size:8px">${i.timestamp}</div>
             </div>
             `
         })
@@ -334,7 +401,7 @@ function encodeQuery(data) {
 let activeDiv = null;
 function handleDivClick(element, id) {
     // console.log("Clicked div with ID:", id);
-    displayPS(id)
+    displayDS(id)
     if (activeDiv) {
         activeDiv.classList.remove("active");
     }
@@ -342,7 +409,7 @@ function handleDivClick(element, id) {
     activeDiv = element;
 }
 
-async function displayPS(uuid) {
+async function displayDS(uuid) {
     const rightpane = document.getElementById("rightpane")
     rightpane.innerHTML = `
     <h4>Loading Please wait...</h4>
@@ -395,15 +462,20 @@ async function displayPS(uuid) {
 
                         <div class="subtitle">Possible Solution</div>
                         <div class="description">${res.d6}</div>
+                        <div class="subtitle">Student info</div>
+                        <div class="description">Name: ${res.name}</div>
+                        <div class="description">Student ID: ${res.std_ID}</div>
+                        <div class="description">Program: ${res.program}</div>
+                        <div class="description">Email: ${res.email}</div>
                     </div>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
-                <textarea class="form-control description" id="remarkedittext" rows="3" disabled=true>Under Development</textarea>
+                <textarea class="form-control description" id="remarkedittext" rows="3" ></textarea>
                 <div class="mt-3 mb-3">
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true>Edit</button>
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn" disabled=true onclick=saveremark(${String(res.uuid)})>Save</button>
+                    
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(res.uuid)})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>

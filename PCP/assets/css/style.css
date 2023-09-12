@@ -193,3 +193,7 @@ html body {
     height: 35px;
     flex-shrink: 0;
 }
+
+.search{
+    width: 250px !important;
+}
