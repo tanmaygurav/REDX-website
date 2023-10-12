@@ -139,7 +139,7 @@
                 <input id="signup-password" name="password" type="password" placeholder="Password" required>
                 <input id="signup-id" name="id" type="id" placeholder="Student ID / Roll No." required>
                 <input id="signup-program" name="program" type="text" placeholder="Program Eg BD1 2023-2025" required>
-                <button type="submit" onsubmit="register()">Register</button>
+                <button type="button" onclick="register()">Register</button>
                 <br>
                 <a class="btn" href="./pcpauth.html">Login</a>
             </form>
@@ -149,9 +149,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
         integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <script>
         const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
-
+        const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
         function encodeQuery(data) {
             let query = data.url
             for (let d in data.params)
@@ -163,6 +165,7 @@
 
 
         async function register() {
+            swal("Please wait")
             var email = document.getElementById("signup-email").value
             var password = document.getElementById("signup-password").value
             var name = document.getElementById("signup-name").value
@@ -173,14 +176,14 @@
             var encrypted = CryptoJS.SHA3(password);
             console.log("encrypted", encrypted.words);
             data = {
-                url: v200,
+                url: v300,
                 params: {
                     'code': 'signup',
                     'name': name,
                     'email': email,
                     'password': encrypted,
-                    'program':program,
-                    'id':id
+                    'program': program,
+                    'id': id
                 }
             }
             const query = encodeQuery(data)
@@ -188,8 +191,8 @@
             const res = await response.json();
             if (response.status != 200) alert("Request returned status code", res.status);
             if (response.status === 200) {
-                if (res.error) alert(res.error)
-                else alert(PS.status)
+                if (res.error) swal("Error", res.status, "error");
+                else swal("Success!", "Please wait while Kaustubh Sir approve your request", "success");
             }
         }
 

@@ -1,4 +1,6 @@
 const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
+const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
+
 // const crypto = require()
 /* Onpage load triggers */
 getUser()
@@ -33,7 +35,7 @@ function logout() {
 /* get Filters */
 async function loadfilters() {
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'getfilters'
         }
@@ -114,7 +116,7 @@ async function getPS() {
     const PSS = document.getElementById("PSS")
     PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'readPS'
         }
@@ -185,7 +187,7 @@ async function search() {
             const PSS = document.getElementById("PSS")
             PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
             data = {
-                url: v200,
+                url: v300,
                 params: {
                     'code': 'readPS'
                 }
@@ -241,7 +243,7 @@ async function search() {
 async function markstatus(uuid, status) {
     console.log("status", String(uuid));
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'markstatus',
             'uuid': uuid,
@@ -265,7 +267,7 @@ async function markstatus(uuid, status) {
 async function refreshDS() {
     const rightpane = document.getElementById("rightpane")
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'readDS',
             'uuid': uuid,
@@ -337,7 +339,7 @@ async function saveremark(uuid) {
     var remark = remarkedittext.value
     console.log("uuid", uuid);
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'remark',
             'uuid': uuid,
@@ -357,7 +359,7 @@ async function saveremark(uuid) {
 async function getremarks(uuid) {
     const RemarksSection = document.getElementById("RemarksSection")
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'readremarks',
             'uuid': uuid,
@@ -415,7 +417,7 @@ async function displayDS(uuid) {
     <h4>Loading Please wait...</h4>
     `;
     data = {
-        url: v200,
+        url: v300,
         params: {
             'code': 'readDS',
             'uuid': uuid,
@@ -500,9 +502,9 @@ async function displayDS(uuid) {
 function accessrequests() {
     if (user) {
         if (user.user.acces_status == "ADMIN") {
-            alert("Under Development")
+            // alert("Under Development")
             // alert("Redirected")
-            // window.location = "/PCP/pcprequest.html"
+            window.location.href = "/PCP/pcprequest.html"
         } else {
             alert("Access Denied")
             console.log("user", user)

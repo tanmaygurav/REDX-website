@@ -197,3 +197,9 @@ html body {
 .search{
     width: 250px !important;
 }
+
+.borders{
+    border: #ff0909;
+    border-width: 10px;
+    background-color: aqua;
+}

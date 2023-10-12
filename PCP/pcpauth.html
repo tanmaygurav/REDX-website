@@ -135,7 +135,7 @@
             <form id="login-form">
                 <input id="login-email" name="email" type="text" placeholder="Email" required>
                 <input id="login-password" name="password" type="password" placeholder="Password" required>
-                <button type="submit" onsubmit="login()">Login</button>
+                <button type="button" onclick="login()">Login</button>
             </form>
             <br>
             <br>
@@ -146,8 +146,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
         integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
+        const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
         function encodeQuery(data) {
             let query = data.url
@@ -158,43 +160,17 @@
         }
 
 
-
-        async function register() {
-            var email = document.getElementById("signup-email").value
-            var password = document.getElementById("signup-password").value
-            var name = document.getElementById("signup-name").value
-
-            console.log("password", password);
-            var encrypted = CryptoJS.SHA3(password);
-            console.log("encrypted", encrypted.words);
-            data = {
-                url: v200,
-                params: {
-                    'code': 'signup',
-                    'email': email,
-                    'password': encrypted,
-                    'name': name
-                }
-            }
-            const query = encodeQuery(data)
-            const response = await fetch(query);
-            const res = await response.json();
-            if (response.status != 200) alert("Request returned status code", res.status);
-            if (response.status === 200) {
-                if (res.error) alert(res.error)
-                else alert(PS.status)
-            }
-        }
-
         async function login() {
+            swal("Please wait")
+
             var email = document.getElementById("login-email").value
             var password = document.getElementById("login-password").value
 
-            console.log("password", password);
+            // console.log("password", password);
             var encrypted = CryptoJS.SHA3(password);
-            console.log("encrypted", encrypted.words);
+            // console.log("encrypted", encrypted.words);
             data = {
-                url: v200,
+                url: v300,
                 params: {
                     'code': 'login',
                     'email': email,
@@ -206,13 +182,16 @@
             const res = await response.json();
             if (response.status != 200) alert("Request returned status code", res.status);
             if (response.status === 200) {
-                if (res.error) alert(res.error)
-                if (res.status != "SUCCESS") alert(res.status)
+                if (res.error) swal("Error", res.status, "error");
+                if (res.status != "SUCCESS") swal("Info", res.status, "info");
                 else {
-                    console.log("user", res);
+                    const user = res
+                    swal(user)
+                    console.log("user", user);
                     sessionStorage.setItem("user", JSON.stringify(res))
-                    window.location = "/PCP/pcpHome.html"
-                    // window.location = "redx.welingkar.org/pcpHome.html"
+                    if (user.access_status == "ADMIN") window.location = "/PCP/pcpHome.html"
+                    else window.location = "/PCP/studenthome.html"
+
 
                 }
 
