@@ -43,31 +43,51 @@
 
     <!-- newUsers -->
     <div class="mx-1">
-        <div id="newUsers">
+        <div id="newusers">
             <h1>Loading Please wait . . .</h1>
             <div class="card m-3 shadow">
                 <div class="card-body">
-                  <div class="d-flex flex-row justify-content-between align-items-center">
-                    <div>
-                        <div> User ID </div>
-                        <div> Name </div>
-                        <div> Email </div>
-                        <div> Program </div>
-                        <div> Student ID </div>
-                        <div> Access </div>
+                    <div class="d-flex flex-row justify-content-between align-items-center">
+                        <div>
+                            <div> User ID </div>
+                            <div> Name </div>
+                            <div> Email </div>
+                            <div> Program </div>
+                            <div> Student ID </div>
+                            <div> Access </div>
+                        </div>
+                        <div class="justify-center ">
+                            <div class="btn btn-outline-success btn-green d-flex flex-row m-2">Accept</div>
+                            <div class="btn btn-outline-danger btn-light d-flex flex-row m-2">Reject</div>
+                        </div>
                     </div>
-                    <div class="justify-center ">
-                        <div class="btn btn-outline-success btn-green d-flex flex-row m-2">Accept</div>
-                        <div class="btn btn-outline-danger btn-light d-flex flex-row m-2">Reject</div>
-                    </div>
-                  </div>
                 </div>
-              </div>
+            </div>
+            <div class="card m-3 shadow">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between align-items-center">
+                        <div>
+                            <div>UserID: ${i.uuid}</div>
+                            <div>Name:  ${i.name} </div>
+                            <div>Email:  ${i.email} </div>
+                            <div>Program:  ${i.program} </div>
+                            <div>Student Id/ Roll no. :  ${i.stdid} </div>
+                        </div>
+                        <div class="justify-center ">
+                            <div class="btn btn-outline-success btn-green d-flex flex-row m-2">Accept</div>
+                            <div class="btn btn-outline-danger btn-light d-flex flex-row m-2">Reject</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
     <!-- newUsers -->
 
     <script src="./assets/js/pcp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

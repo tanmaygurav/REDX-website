@@ -13,6 +13,13 @@ if (window.location.pathname == "/PCP/pcpHome.html") {
 if (window.location.pathname == "/PCP/studenthome.html") {
     problemsbyemail()
 }
+if (window.location.pathname == "/PCP/pcprequest.html") {
+    newusers()
+}
+
+/* Onpage load triggers */
+
+
 /* Student Page functions */
 async function openAdd() {
     const { value: formValues } = await Swal.fire({
@@ -65,7 +72,7 @@ async function imageUpload() {
 async function problemsbyemail() {
     const home = document.getElementById("problemstatements")
     const user = JSON.parse(sessionStorage.getItem("user"))
-    console.log("user", user.user);
+    // console.log("user", user.user);
     const email = user.user.email
     home.innerHTML = `<h4>Loading Please Wait...</h4>`
 
@@ -77,10 +84,10 @@ async function problemsbyemail() {
         }
     }
     const query = encodeQuery(data)
-    console.log("query", query)
+    // console.log("query", query)
     const res = await fetch(query);
     const PS = await res.json();
-    console.log("res", PS)
+    // console.log("res", PS)
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
         home.innerHTML = ""
@@ -114,27 +121,6 @@ async function problemsbyemail() {
     }
 }
 /* Student Page functions */
-
-
-/* Onpage load triggers */
-function getUser() {
-    user = JSON.parse(sessionStorage.getItem("user"))
-
-    if (user) {
-        var displayName = document.getElementById("profile-name")
-        displayName.innerText = user.user.name
-
-    } else {
-        alert("Could not fetch user, Please try Logining IN again or use a different browser")
-        window.location = "/PCP/pcpauth.html"
-    }
-}
-
-function logout() {
-    sessionStorage.removeItem("user")
-    window.location = "/PCP/pcpauth.html"
-
-}
 
 /* get Filters */
 async function loadfilters() {
@@ -616,6 +602,75 @@ function accessrequests() {
     } else { alert("user not found") }
 }
 
+function getUser() {
+    user = JSON.parse(sessionStorage.getItem("user"))
+
+    if (user) {
+        var displayName = document.getElementById("profile-name")
+        displayName.innerText = user.user.name
+
+    } else {
+        alert("Could not fetch user, Please try Logining IN again or use a different browser")
+        window.location = "/PCP/pcpauth.html"
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem("user")
+    window.location = "/PCP/pcpauth.html"
+
+}
+
+
+async function newusers() {
+    const newuser = document.getElementById("newusers")
+    newuser.innerHTML = `<h4>Loading Please Wait...</h4>`
+
+    data = {
+        url: v300,
+        params: {
+            'code': 'getnewusers'
+        }
+    }
+    const query = encodeQuery(data)
+    // console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
+        else {
+
+            newuser.innerHTML = ""
+            if (PS.length == 0) newuser.innerHTML = `<h1>No new request</h1>`
+            else {
+                PS.forEach(i => {
+                    newuser.innerHTML += `
+            <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <div>
+                            <div>UserID: ${i.uuid}</div>
+                            <div>Name:  ${i.name} </div>
+                            <div>Email:  ${i.email} </div>
+                            <div>Program:  ${i.program} </div>
+                            <div>Student Id/ Roll no. :  ${i.stdid} </div>
+                            </div>
+                            <div class="justify-center ">
+                                <div class="btn btn-outline-success btn-green d-flex flex-row m-2">Accept</div>
+                                <div class="btn btn-outline-danger btn-light d-flex flex-row m-2">Reject</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    `
+                })
+            }
+        }
+
+    }
+}
 /* Abstraction */
 /* Notes
 Tags
@@ -623,4 +678,7 @@ null = unmarked
 1= interesting
 0= not interesting
 
+Access
+0 no
+10 yes
 */
