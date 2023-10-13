@@ -1,7 +1,6 @@
 const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
 const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
-// const crypto = require()
 /* Onpage load triggers */
 getUser()
 var user
@@ -11,11 +10,116 @@ if (window.location.pathname == "/PCP/pcpHome.html") {
     getPS()
     loadfilters()
 }
+if (window.location.pathname == "/PCP/studenthome.html") {
+    problemsbyemail()
+}
+/* Student Page functions */
+async function openAdd() {
+    const { value: formValues } = await Swal.fire({
+        title: 'New Pain Point',
+        html:
+            '<p>Title</p>' +
+            '<input id="Title" class="swal2-input">' +
+            '<p>Description</p>' +
+            '<Textarea id="Description" class="swal2-input"></Textarea>' +
+            '<p>Solution</p>' +
+            '<Textarea id="Solution" class="swal2-input"></Textarea>',
+        focusConfirm: false,
+        preConfirm: () => {
+            return [
+                document.getElementById('Title').value,
+                document.getElementById('Description').value,
+                document.getElementById('Solution').value,
+            ]
+        }
+    })
+
+    if (formValues) {
+        Swal.fire(JSON.stringify(formValues))
+    }
+}
+
+async function imageUpload() {
+    const { value: file } = await Swal.fire({
+        title: 'Select image',
+        input: 'file',
+        inputAttributes: {
+            'accept': 'image/*',
+            'aria-label': 'Upload your profile picture'
+        }
+    })
+
+    if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            Swal.fire({
+                title: 'Your uploaded picture',
+                imageUrl: e.target.result,
+                imageAlt: 'The uploaded picture'
+            })
+        }
+        reader.readAsDataURL(file)
+    }
+}
+
+async function problemsbyemail() {
+    const home = document.getElementById("problemstatements")
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    console.log("user", user.user);
+    const email = user.user.email
+    home.innerHTML = `<h4>Loading Please Wait...</h4>`
+
+    data = {
+        url: v300,
+        params: {
+            'code': 'email',
+            'email': email
+        }
+    }
+    const query = encodeQuery(data)
+    console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    console.log("res", PS)
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        home.innerHTML = ""
+        if (PS.length == 0) home.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
+        else {
+            PS.forEach(i => {
+                let descript
+                if (i.description) descript = description
+                else {
+                    descript = i.d0 + i.d1 + i.d2 + i.d3 + i.d4 + i.d5
+                }
+                home.innerHTML += `
+        <div class="container-fluid m-2 border shadow">
+        <div class="row">
+            <div class="col-sm border">
+                <div class="m-1">${i.uuid}</div>
+                <div class="m-1">${i.timestamp}</div>
+            </div>
+            <div class="col-sm-2 border ">
+                <div class="mb-2 text-center">${i.title}</div>
+                <div>${i.domain}</div>
+            </div>
+            <div class="col-sm-6 border text-center">${descript}</div>
+            <div class="col-sm-3 border text-center">${i.d6}</div>
+        </div>
+        </div>
+        `
+            })
+        }
+
+    }
+}
+/* Student Page functions */
+
 
 /* Onpage load triggers */
 function getUser() {
     user = JSON.parse(sessionStorage.getItem("user"))
-    // console.log("user", user.user);
+
     if (user) {
         var displayName = document.getElementById("profile-name")
         displayName.innerText = user.user.name
@@ -180,57 +284,57 @@ async function search() {
     console.log("searchcat", searchcat)
     // if (!["Search By", "Student ID", "Student Name", "Title"].includes(searchcat)) alert("Please Select a Category in search by dropdown")
     // else {
-        var searchtext = document.getElementById("searchtext").value
-        console.log("searchtext", searchtext.length);
-        // if (searchtext.length < 3) alert("Please enter atleast 3 characters")
-        // else {
-            const PSS = document.getElementById("PSS")
-            PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
-            data = {
-                url: v300,
-                params: {
-                    'code': 'readPS'
-                }
+    var searchtext = document.getElementById("searchtext").value
+    console.log("searchtext", searchtext.length);
+    // if (searchtext.length < 3) alert("Please enter atleast 3 characters")
+    // else {
+    const PSS = document.getElementById("PSS")
+    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
+    data = {
+        url: v300,
+        params: {
+            'code': 'readPS'
+        }
+    }
+    const query = encodeQuery(data)
+    const res = await fetch(query);
+    const PS = await res.json();
+    if (res.status != 200) alert("Request returnde status code", res.status);
+    if (res.status === 200) {
+        PSS.innerHTML = ""
+
+        const options = {
+            includeScore: true,
+            // Search in `author` and in `tags` array
+            keys: ['name', 'title', 'std_ID', 'domain', 'tag']
+        }
+
+        const fuse = new Fuse(PS, options)
+
+
+        const searchresult = fuse.search(searchtext)
+        console.log("search result", searchresult)
+        let sortedres = searchresult.sort(function (a, b) {
+            return a.refIndex - b.refIndex
+        })
+
+        sortedres.forEach(i => {
+            let divClass = "btn scrollable-content";
+            if (i.item.tag === "0") {
+                divClass = "btn scrollable-content svg-green";
+            } else if (i.item.tag === "1") {
+                divClass = "btn scrollable-content svg-green";
             }
-            const query = encodeQuery(data)
-            const res = await fetch(query);
-            const PS = await res.json();
-            if (res.status != 200) alert("Request returnde status code", res.status);
-            if (res.status === 200) {
-                PSS.innerHTML = ""
 
-                const options = {
-                    includeScore: true,
-                    // Search in `author` and in `tags` array
-                    keys: ['name', 'title', 'std_ID','domain','tag']
-                }
-
-                const fuse = new Fuse(PS, options)
-                
-
-                const searchresult = fuse.search(searchtext)
-                console.log("search result",searchresult)
-                let sortedres = searchresult.sort(function (a, b) {
-                    return a.refIndex - b.refIndex
-                })
-
-                sortedres.forEach(i => {
-                    let divClass = "btn scrollable-content";
-                    if (i.item.tag === "0") {
-                        divClass = "btn scrollable-content svg-green";
-                    } else if (i.item.tag === "1") {
-                        divClass = "btn scrollable-content svg-green";
-                    }
-
-                    PSS.innerHTML +=
-                        `<div class="${divClass}" onclick="handleDivClick(this, '${i.item.uuid}')">
+            PSS.innerHTML +=
+                `<div class="${divClass}" onclick="handleDivClick(this, '${i.item.uuid}')">
                 <div class="title-left">${i.item.title}</div>
                 <div class="domain-left">${i.item.domain}</div>
-                </div>` 
-                });
+                </div>`
+        });
 
-            }
-        // }
+    }
+    // }
 
 
     // }
@@ -312,13 +416,13 @@ async function refreshDS() {
                         <div class="subtitle">Why should this problem be solved? / What is the benefit to the user of solving this problem?</div>
                         <div class="description">${res.d5}</div>
 
-                        <div class="subtitle">Possible Solution</div>
+                        <div class="subtitle">Solution</div>
                         <div class="description">${res.d6}</div>
                         <div class="subtitle">Student info <i class="fa-solid fa-circle-info"></i></div>
                     </div>
                 </div>
-            </div>
-            <div  class="mb-3">
+            </div>,
+     <div  class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
                 <textarea class="form-control description" id="remarkedittext" rows="3" ></textarea>
                 <div  class="mt-3 mb-3" >
@@ -501,7 +605,7 @@ async function displayDS(uuid) {
 
 function accessrequests() {
     if (user) {
-        if (user.user.acces_status == "ADMIN") {
+        if (user.user.access_status == "ADMIN") {
             // alert("Under Development")
             // alert("Redirected")
             window.location.href = "/PCP/pcprequest.html"
@@ -513,3 +617,10 @@ function accessrequests() {
 }
 
 /* Abstraction */
+/* Notes
+Tags
+null = unmarked
+1= interesting
+0= not interesting
+
+*/

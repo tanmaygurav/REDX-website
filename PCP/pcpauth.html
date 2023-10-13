@@ -189,8 +189,12 @@
                     swal(user)
                     console.log("user", user);
                     sessionStorage.setItem("user", JSON.stringify(res))
-                    if (user.access_status == "ADMIN") window.location = "/PCP/pcpHome.html"
-                    else window.location = "/PCP/studenthome.html"
+                    if (user.user.access_status == "ADMIN") {
+                        console.log("user.access_status", user.access_status);
+                        window.location = "/PCP/pcpHome.html"}
+                    else {
+                        console.log("user.access_status", user.access_status);
+                        window.location = "/PCP/studenthome.html"}
 
 
                 }

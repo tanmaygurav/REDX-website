@@ -32,9 +32,11 @@ html body {
 .filter-bar {
     padding: 10px;
 }
+
 .btn.active {
     color: #ff0202;
 }
+
 .dropdown-toggle {
     color: #666;
     font-family: Montserrat !important;
@@ -53,7 +55,7 @@ html body {
     line-height: normal;
 }
 
-.activefilter{
+.activefilter {
     color: #ff0202;
 }
 
@@ -188,18 +190,38 @@ html body {
     line-height: normal;
 }
 
-.remarkbtn{
+.remarkbtn {
     width: 75px;
     height: 35px;
     flex-shrink: 0;
 }
 
-.search{
+.search {
     width: 250px !important;
 }
 
-.borders{
+.borders {
     border: #ff0909;
     border-width: 10px;
     background-color: aqua;
+}
+
+.fixedButton {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    padding: 30px;
+}
+
+.roundedFixedBtn {
+    height: 60px;
+    line-height: 80px;
+    width: 60px;
+    font-size: 2em;
+    font-weight: bold;
+    border-radius: 50%;
+    /* background-color: #4CAF50; */
+    /* color: white; */
+    text-align: center;
+    cursor: pointer;
 }
