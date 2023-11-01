@@ -167,7 +167,7 @@
 
 
         async function register() {
-            swal("Please wait")
+            swal.fire("Please wait")
             var email = document.getElementById("signup-email").value
             var password = document.getElementById("signup-password").value
             var name = document.getElementById("signup-name").value
@@ -193,8 +193,8 @@
             const res = await response.json();
             if (response.status != 200) alert("Request returned status code", res.status);
             if (response.status === 200) {
-                if (res.error) swal("Error", res.status, "error");
-                else swal("Success!", "Please wait while Kaustubh Sir approve your request", "success");
+                if (res.error) swal.fire("Error", res.status, "error");
+                else swal.fire("Success!", "Please wait while Kaustubh Sir approve your request", "success");
             }
         }
 

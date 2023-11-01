@@ -104,7 +104,7 @@ async function problemsbyemail() {
         <div class="row">
             <div class="col-sm border">
                 <div class="m-1">${i.uuid}</div>
-                <div class="m-1">${i.timestamp}</div>
+                <div class="m-1 timestamp">${i.timestamp}</div>
             </div>
             <div class="col-sm-2 border ">
                 <div class="mb-2 text-center">${i.title}</div>
@@ -657,8 +657,8 @@ async function newusers() {
                             <div>Student Id/ Roll no. :  ${i.stdid} </div>
                             </div>
                             <div class="justify-center ">
-                                <div class="btn btn-outline-success btn-green d-flex flex-row m-2">Accept</div>
-                                <div class="btn btn-outline-danger btn-light d-flex flex-row m-2">Reject</div>
+                                <div class="btn btn-outline-success btn-green d-flex flex-row m-2" onclick="handlerequest(this)" id="${i.uuid}">Accept</div>
+                                <div class="btn btn-outline-danger btn-light d-flex flex-row m-2" onclick="handlerequest(this)" id="${i.uuid}">Reject</div>
                             </div>
                         </div>
                     </div>
@@ -669,6 +669,32 @@ async function newusers() {
             }
         }
 
+    }
+}
+
+async function handlerequest(btn) {
+    swal.fire("Please wait")
+    const status = btn.innerText
+    const userID = btn.id
+    let code = "rejectaccess"
+    console.log("status", status);
+
+    if (status == "Accept") code = "grantaccess";
+    data = {
+        url: v300,
+        params: {
+            'code': code,
+            'uuid': userID
+        }
+    }
+    const query = encodeQuery(data)
+    // console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
+        else { newusers()}
     }
 }
 /* Abstraction */
