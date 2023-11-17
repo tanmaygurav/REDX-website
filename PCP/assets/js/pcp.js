@@ -1,8 +1,9 @@
 const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
 const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
+
 /* Onpage load triggers */
-getUser()
+
 var user
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
 var searchby = "NA"
@@ -481,13 +482,6 @@ async function getremarks(uuid) {
 /* Home right pane */
 
 /* Abstraction */
-function encodeQuery(data) {
-    let query = data.url
-    for (let d in data.params)
-        query += encodeURIComponent(d) + '='
-            + encodeURIComponent(data.params[d]) + '&';
-    return query.slice(0, -1)
-}
 
 /* left pane div active */
 let activeDiv = null;
@@ -602,18 +596,7 @@ function accessrequests() {
     } else { alert("user not found") }
 }
 
-function getUser() {
-    user = JSON.parse(sessionStorage.getItem("user"))
 
-    if (user) {
-        var displayName = document.getElementById("profile-name")
-        displayName.innerText = user.user.name
-
-    } else {
-        alert("Could not fetch user, Please try Logining IN again or use a different browser")
-        window.location = "/PCP/pcpauth.html"
-    }
-}
 
 function logout() {
     sessionStorage.removeItem("user")
