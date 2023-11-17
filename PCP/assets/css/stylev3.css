@@ -121,7 +121,7 @@
 
 .row-title-bg {
     width: 18.75rem;
-    height: 3.75rem;
+    height: auto;
     flex: auto;
     background: #F8F9FA;
     border-bottom: 1px solid #7A7A7A;
@@ -169,7 +169,7 @@
 
 .row-desc-bg {
     width: 30.625rem;
-    height: 3.75rem;
+    height: auto;
     flex: auto;
     background: #F8F9FA;
     border-bottom: 1px solid #7A7A7A;
@@ -189,7 +189,7 @@
 .row-sol-bg {
     display: flex;
     width: 25rem;
-    height: 3.75rem;
+    height: auto;
     flex: auto;
     background: #F8F9FA;
     border-bottom: 1px solid #7A7A7A;
@@ -209,7 +209,7 @@
 
 .row-img-bg {
     width: 8.75rem;
-    height: 3.75rem;
+    height: auto;
     flex: auto;
     background: #F8F9FA;
     border-bottom: 1px solid #7A7A7A;
