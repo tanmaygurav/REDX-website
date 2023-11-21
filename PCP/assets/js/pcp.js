@@ -1,7 +1,6 @@
 const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
 const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
-
 /* Onpage load triggers */
 
 var user
@@ -12,7 +11,7 @@ if (window.location.pathname == "/PCP/pcpHome.html") {
     loadfilters()
 }
 if (window.location.pathname == "/PCP/studenthome.html") {
-    problemsbyemail()
+    // problemsbyemail()
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
     newusers()
@@ -22,51 +21,87 @@ if (window.location.pathname == "/PCP/pcprequest.html") {
 
 
 /* Student Page functions */
-async function openAdd() {
-    const { value: formValues } = await Swal.fire({
-        title: 'New Pain Point',
-        html:
-            '<p>Title</p>' +
-            '<input id="Title" class="swal2-input">' +
-            '<p>Description</p>' +
-            '<Textarea id="Description" class="swal2-input"></Textarea>' +
-            '<p>Solution</p>' +
-            '<Textarea id="Solution" class="swal2-input"></Textarea>',
-        focusConfirm: false,
-        preConfirm: () => {
-            return [
-                document.getElementById('Title').value,
-                document.getElementById('Description').value,
-                document.getElementById('Solution').value,
-            ]
-        }
-    })
+// async function openAdd() {
+//     const { value: formValues } = await Swal.fire({
+//         title: 'New Pain Point',
+//         html:
+//             '<p>Title</p>' +
+//             '<input id="Title" class="swal2-input">' +
+//             '<p>Description</p>' +
+//             '<Textarea id="Description" class="swal2-input"></Textarea>' +
+//             '<p>Solution</p>' +
+//             '<Textarea id="Solution" class="swal2-input"></Textarea>',
+//         focusConfirm: false,
+//         preConfirm: () => {
+//             return [
+//                 document.getElementById('Title').value,
+//                 document.getElementById('Description').value,
+//                 document.getElementById('Solution').value,
+//             ]
+//         }
+//     })
 
-    if (formValues) {
-        Swal.fire(JSON.stringify(formValues))
-    }
+//     if (formValues) {
+//         Swal.fire(JSON.stringify(formValues))
+//     }
+// }
+
+// async function imageUpload() {
+//     const { value: file } = await Swal.fire({
+//         title: 'Select image',
+//         input: 'file',
+//         inputAttributes: {
+//             'accept': 'image/*',
+//             'aria-label': 'Upload your profile picture'
+//         }
+//     })
+
+//     if (file) {
+//         const reader = new FileReader()
+//         reader.onload = (e) => {
+//             Swal.fire({
+//                 title: 'Your uploaded picture',
+//                 imageUrl: e.target.result,
+//                 imageAlt: 'The uploaded picture'
+//             })
+//         }
+//         reader.readAsDataURL(file)
+//     }
+// }
+
+function adduploadbtn() {
+    const media = document.getElementById("Media")
+
+    console.log("media", media.children.length);
+    var count = 0 + media.children.length
+    media.innerHTML += `
+    
+    <form id="form">
+        <div class="input-group">
+            <input name="file" multiple id="uploadfile${count}" type="file" class="form-control">
+            <div id="submit" class="btn btn-outline-secondary" onclick="upload(${count})" text="Upload">Upload</div>
+        </div>
+    </form>
+    `
 }
 
-async function imageUpload() {
-    const { value: file } = await Swal.fire({
-        title: 'Select image',
-        input: 'file',
-        inputAttributes: {
-            'accept': 'image/*',
-            'aria-label': 'Upload your profile picture'
-        }
-    })
+async function upload(count) {
+    const file = document.getElementById(`uploadfile${count}`);
 
-    if (file) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            Swal.fire({
-                title: 'Your uploaded picture',
-                imageUrl: e.target.result,
-                imageAlt: 'The uploaded picture'
-            })
-        }
-        reader.readAsDataURL(file)
+    const fr = new FileReader();
+    fr.readAsArrayBuffer(file.files[0]);
+    fr.onload = f => {
+        const url = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec";  // <--- Please set the URL of Web Apps.
+        // https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?
+        const qs = new URLSearchParams({ filename: file.files[0].name, mimeType: file.files[0].type });
+        fetch(`${url}?${qs}`, {
+            method: "POST", body: JSON.stringify([...new Int8Array(f.target.result)]), redirect: 'follow', headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            },
+        })
+            .then(res => res.json())
+            .then(e => console.log("response",e))  // <--- You can retrieve the returned value here.
+            .catch(err => console.log(err));
     }
 }
 
@@ -482,7 +517,13 @@ async function getremarks(uuid) {
 /* Home right pane */
 
 /* Abstraction */
-
+function encodeQuery(data) {
+    let query = data.url
+    for (let d in data.params)
+        query += encodeURIComponent(d) + '='
+            + encodeURIComponent(data.params[d]) + '&';
+    return query.slice(0, -1)
+}
 /* left pane div active */
 let activeDiv = null;
 function handleDivClick(element, id) {
@@ -677,7 +718,7 @@ async function handlerequest(btn) {
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
         if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
-        else { newusers()}
+        else { newusers() }
     }
 }
 /* Abstraction */

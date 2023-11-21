@@ -1,4 +1,4 @@
-getUser()
+// getUser()
 
 function getUser() {
     user = JSON.parse(sessionStorage.getItem("user"))
