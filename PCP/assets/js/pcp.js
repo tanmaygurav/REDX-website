@@ -77,7 +77,7 @@ function adduploadbtn() {
     media.innerHTML += `
     
     <form id="form">
-        <div class="input-group">
+        <div class="input-group" id="uploadgroup${count}">
             <input name="file" multiple id="uploadfile${count}" type="file" class="form-control">
             <div id="submit" class="btn btn-outline-secondary" onclick="upload(${count})" text="Upload">Upload</div>
         </div>
@@ -91,6 +91,7 @@ async function upload(count) {
     const fr = new FileReader();
     fr.readAsArrayBuffer(file.files[0]);
     fr.onload = f => {
+        loading(count)
         const url = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec";  // <--- Please set the URL of Web Apps.
         // https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?
         const qs = new URLSearchParams({ filename: file.files[0].name, mimeType: file.files[0].type });
@@ -100,9 +101,33 @@ async function upload(count) {
             },
         })
             .then(res => res.json())
-            .then(e => console.log("response",e))  // <--- You can retrieve the returned value here.
-            .catch(err => console.log(err));
+            .then(e => uploadresult(e, count))  // <--- You can retrieve the returned value here.
+            .catch(err => uploadresult(err));
     }
+}
+
+function loading(count) {
+    const file = document.getElementById(`uploadgroup${count}`);
+    file.innerHTML =
+        `
+    <div class="loader"></div>
+    `
+}
+
+function uploadresult(result, count) {
+    const file = document.getElementById(`uploadgroup${count}`);
+    if (result.fileUrl) {
+        file.innerHTML =
+            `
+    <a href="${result.fileUrl}" target="_blank">${result.filename}</a>
+    `
+    } else {
+        file.innerHTML =
+            `
+    <div>${result}</div>
+    `
+    }
+
 }
 
 async function problemsbyemail() {
