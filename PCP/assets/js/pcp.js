@@ -21,53 +21,29 @@ if (window.location.pathname == "/PCP/pcprequest.html") {
 
 
 /* Student Page functions */
-// async function openAdd() {
-//     const { value: formValues } = await Swal.fire({
-//         title: 'New Pain Point',
-//         html:
-//             '<p>Title</p>' +
-//             '<input id="Title" class="swal2-input">' +
-//             '<p>Description</p>' +
-//             '<Textarea id="Description" class="swal2-input"></Textarea>' +
-//             '<p>Solution</p>' +
-//             '<Textarea id="Solution" class="swal2-input"></Textarea>',
-//         focusConfirm: false,
-//         preConfirm: () => {
-//             return [
-//                 document.getElementById('Title').value,
-//                 document.getElementById('Description').value,
-//                 document.getElementById('Solution').value,
-//             ]
-//         }
-//     })
 
-//     if (formValues) {
-//         Swal.fire(JSON.stringify(formValues))
-//     }
-// }
+async function submitpp(){
 
-// async function imageUpload() {
-//     const { value: file } = await Swal.fire({
-//         title: 'Select image',
-//         input: 'file',
-//         inputAttributes: {
-//             'accept': 'image/*',
-//             'aria-label': 'Upload your profile picture'
-//         }
-//     })
 
-//     if (file) {
-//         const reader = new FileReader()
-//         reader.onload = (e) => {
-//             Swal.fire({
-//                 title: 'Your uploaded picture',
-//                 imageUrl: e.target.result,
-//                 imageAlt: 'The uploaded picture'
-//             })
-//         }
-//         reader.readAsDataURL(file)
-//     }
-// }
+    data = {
+        url: v300,
+        params: {
+            'code': 'addpp',
+            'email': uuid,
+            'name': user.user.name,
+            'stdID': document.getElementById("remarkedittext").value,
+            'program': user.user.name,
+            'domain': user.user.name,
+            'title': user.user.name,
+            'description': user.user.name,
+            'media': user.user.name,
+            'solution': user.user.name,
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+}
 
 function adduploadbtn() {
     const media = document.getElementById("Media")
@@ -128,6 +104,15 @@ function uploadresult(result, count) {
     `
     }
 
+}
+
+function openAdd(){
+    document.getElementById("uploadform").style.display = "block";
+    document.getElementById("uploadformbg").style.display = "block";
+}
+function closeAdd(){
+    document.getElementById("uploadform").style.display = "none";
+    document.getElementById("uploadformbg").style.display = "none";
 }
 
 async function problemsbyemail() {
