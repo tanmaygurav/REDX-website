@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <link rel="stylesheet" href="./assets/css/stylev3.css" />
     <link href="https://fonts.googleapis.com/css?family=Actor" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
@@ -12,7 +13,8 @@
     <title>Document</title>
 </head>
 <!-- onload="getPS()" -->
-<body >
+
+<body onload="getPS()">
     <div class="top-line">
         <div class="top-line-type">
         </div>
@@ -48,7 +50,7 @@
     <div id="PSList">
         <div id="PSLIP0001" class="flex-container">
             <div class="row-tick">
-                <input onclick="tag(this)" type="checkbox" value="P0001">
+                <input onclick="tag(this)" type="checkbox" value="P0001" checked>
             </div>
             <div class="row-title-bg">
                 <div class="row-title-ps-title">
@@ -69,7 +71,12 @@
             </div>
             <div class="row-sol-bg">
                 <div class="row-sol-ps-sol">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra vel turpis nunc eget lorem dolor sed viverra ipsum. Platea dictumst quisque sagittis purus sit amet volutpat consequat. Neque sodales ut etiam sit amet. Morbi tristique senectus et netus. Laoreet sit amet cursus sit amet dictum. Feugiat vivamus at augue eget arcu dictum. Bibendum ut tristique et egestas quis. Id interdum velit laoreet id donec ultrices. Sem fringilla ut morbi tincidunt augue interdum velit euismod in.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Pharetra vel turpis nunc eget lorem dolor sed viverra ipsum. Platea dictumst
+                    quisque sagittis purus sit amet volutpat consequat. Neque sodales ut etiam sit amet. Morbi tristique
+                    senectus et netus. Laoreet sit amet cursus sit amet dictum. Feugiat vivamus at augue eget arcu
+                    dictum. Bibendum ut tristique et egestas quis. Id interdum velit laoreet id donec ultrices. Sem
+                    fringilla ut morbi tincidunt augue interdum velit euismod in.
                 </div>
             </div>
             <div class="row-img-bg">
@@ -86,7 +93,7 @@
 
         <div id="${res.uuid}" class="flex-container">
             <div class="row-tick">
-                <input onclick="tag(this)" type="checkbox" value="${res.uid}" checked="${res.tag}">
+                <input onclick="tag(this)" type="checkbox" value="${res.uid}" checked>
             </div>
             <div class="row-title-bg">
                 <div class="row-title-ps-title">
