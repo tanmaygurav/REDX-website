@@ -3,15 +3,16 @@ const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkT
 
 /* Onpage load triggers */
 
-var user
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
 var searchby = "NA"
+var medialist = []
 if (window.location.pathname == "/PCP/pcpHome.html") {
     getPS()
     loadfilters()
 }
 if (window.location.pathname == "/PCP/studenthome.html") {
     // problemsbyemail()
+    getactivedomains()
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
     newusers()
@@ -21,28 +22,71 @@ if (window.location.pathname == "/PCP/pcprequest.html") {
 
 
 /* Student Page functions */
+const form = document.getElementById('ppform');
+function ppformsubmit() {
+    console.log("Submit clicked");
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    var domain = document.getElementById("ActiveDomainbtn").innerText
+    var title = document.getElementById("PSTitle").value
+    var description = document.getElementById("PSDescription").value
+    var solution = document.getElementById("PSSolution").value
+    var media = JSON.stringify(medialist)
+    if (PSformval(user, domain, title, description)) {
+        console.log("Submitted");
+        submitpp(user, domain, title, description, media, solution)
+    }
+}
 
-async function submitpp(){
-
-
+async function submitpp(user, domain, title, description, media, solution) {
     data = {
         url: v300,
         params: {
             'code': 'addpp',
-            'email': uuid,
+            'email': user.user.email,
             'name': user.user.name,
-            'stdID': document.getElementById("remarkedittext").value,
-            'program': user.user.name,
-            'domain': user.user.name,
-            'title': user.user.name,
-            'description': user.user.name,
-            'media': user.user.name,
-            'solution': user.user.name,
+            'stdID': user.user.roll_id,
+            'program': user.user.program,
+            'domain': domain,
+            'title': title,
+            'description': description,
+            'media': media,
+            'solution': solution,
         }
     }
     const query = encodeQuery(data)
     const response = await fetch(query);
     const res = await response.json();
+    if (res.status == "SUCCESS") {
+        Swal.fire("Success", "Pain Point has been submitted", "success")
+        // TODO: clearform()
+    }
+    else Swal.fire("Upload failed", res.message, "error")
+}
+
+
+function PSformval(user, domain, title, description) {
+    if (user == "") {
+        console.log("no user");
+        Swal.fire("user not found please login and try again", "", "error")
+        return false
+    }
+    if (domain == "Select Domain") {
+        console.log("no domain");
+        Swal.fire("Please select domain", "", "info")
+        return false
+    }
+
+    if (title.length <= 0) {
+        console.log("no title");
+        Swal.fire("Please Enter Title", "", "info")
+        return false
+    }
+    if (description.length <= 0) {
+        console.log("no description");
+        Swal.fire("Please Enter Description", "", "info")
+        return false
+    }
+    return true
 }
 
 function adduploadbtn() {
@@ -52,12 +96,11 @@ function adduploadbtn() {
     var count = 0 + media.children.length
     media.innerHTML += `
     
-    <form id="form">
         <div class="input-group" id="uploadgroup${count}">
-            <input name="file" multiple id="uploadfile${count}" type="file" class="form-control">
+            <input name="file" id="uploadfile${count}" type="file" class="form-control">
             <div id="submit" class="btn btn-outline-secondary" onclick="upload(${count})" text="Upload">Upload</div>
         </div>
-    </form>
+    
     `
 }
 
@@ -77,42 +120,114 @@ async function upload(count) {
             },
         })
             .then(res => res.json())
-            .then(e => uploadresult(e, count))  // <--- You can retrieve the returned value here.
-            .catch(err => uploadresult(err));
+            .then(e => checkresult(e, count))  // <--- You can retrieve the returned value here.
+            .catch(err => handlerror("upload", err));
     }
 }
 
+
 function loading(count) {
     const file = document.getElementById(`uploadgroup${count}`);
+    document.getElementById(`submitbtn`).setAttribute("disabled", "disabled");
     file.innerHTML =
         `
     <div class="loader"></div>
     `
 }
 
-function uploadresult(result, count) {
-    const file = document.getElementById(`uploadgroup${count}`);
+function checkresult(result, count) {
+    document.getElementById(`uploadgroup${count}`).innerHTML='';
     if (result.fileUrl) {
-        file.innerHTML =
-            `
-    <a href="${result.fileUrl}" target="_blank">${result.filename}</a>
-    `
+        medialist.push(result)
+        // sessionStorage.setItem("medialist",JSON.stringify(medialist))
+        displayuploads()
+        document.getElementById(`submitbtn`).removeAttribute("disabled");
     } else {
         file.innerHTML =
             `
     <div>${result}</div>
     `
     }
-
 }
 
-function openAdd(){
+function displayuploads() {
+    const files = document.getElementById(`Media`);
+    medialist.forEach(i => {
+        files.innerHTML += `
+        <div class="input-group mb-3">
+            <span  class="form-control"><a href="${i.fileUrl}" target="_blank">${i.filename}</a></span>
+            <button class="btn btn-outline-secondary" type="button" onclick="deletefile('${i.fileId}')"><img class="del"
+                    src="./assets/img/delete.png" alt="delete" srcset=""></button>
+        </div>
+        `
+    })
+}
+
+async function deletefile(fileId) {
+    data = {
+        url: v300,
+        params: {
+            'code': 'deleteFile',
+            'fileId': fileId
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    setactivedomains(res)
+}
+
+function getcurrentfilesinsession() {
+    try {
+        return sessionStorage.getItem('currentfilesinsession')
+    } catch (error) {
+
+    }
+}
+
+function openAdd() {
     document.getElementById("uploadform").style.display = "block";
     document.getElementById("uploadformbg").style.display = "block";
 }
-function closeAdd(){
+function closeAdd() {
     document.getElementById("uploadform").style.display = "none";
     document.getElementById("uploadformbg").style.display = "none";
+}
+
+function handlerror(fn, error) {
+    console.error(fn, error);
+    Swal.fire("Error while uploading", error, "error")
+}
+
+async function getactivedomains() {
+    data = {
+        url: v300,
+        params: {
+            'code': 'getactivedomains',
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    if (response.status != 200) alert("Request returned status code", response.status);
+    if (response.status === 200) {
+        setactivedomains(res)
+    }
+    // TODO: error handling
+}
+
+function setactivedomains(res) {
+    const ActiveDomain = document.getElementById("ActiveDomain")
+    ActiveDomain.innerHTML = ""
+    const domainlist = res.domain
+    domainlist.forEach(i => {
+        ActiveDomain.innerHTML += `<li><div class="dropdown-item" onclick=selectdomain(this)>${i}</div></li>`
+    })
+}
+
+function selectdomain(item) {
+    const ActiveDomainbtn = document.getElementById("ActiveDomainbtn")
+    ActiveDomainbtn.innerText = item.innerText
 }
 
 async function problemsbyemail() {
