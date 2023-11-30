@@ -10,8 +10,8 @@ if (window.location.pathname == "/PCP/pcpHome.html") {
     getPS()
     loadfilters()
 }
-if (window.location.pathname == "/PCP/studenthome.html") {
-    // problemsbyemail()
+if (window.location.pathname == "/PCP/homev3.html") {
+    problemsbyemail()
     getactivedomains()
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
@@ -58,7 +58,7 @@ async function submitpp(user, domain, title, description, media, solution) {
     const res = await response.json();
     if (res.status == "SUCCESS") {
         Swal.fire("Success", "Pain Point has been submitted", "success")
-        // TODO: clearform()
+        window.location.reload()
     }
     else Swal.fire("Upload failed", res.message, "error")
 }
@@ -230,12 +230,92 @@ function selectdomain(item) {
     ActiveDomainbtn.innerText = item.innerText
 }
 
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+
+    // Months array to convert numeric month to string
+    const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    // Get day, month, year
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    // Get hours and minutes
+    let hours = date.getHours();
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+
+    // AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    // Format the string
+    const formattedDate = `${day}/${month}/${year}; ${hours}:${minutes} ${ampm}`;
+
+    return formattedDate;
+}
+
+async function tag(item) {
+
+    const checkboxId = `check-${item.value}`;
+    const spinId = `spin-${item.value}`;
+
+    const checkbox = document.getElementById(checkboxId);
+    const spin = document.getElementById(spinId)
+
+    if (spin.style.display === 'none') {
+        spin.style.display = 'block';
+        checkbox.style.display = 'none';
+    }
+
+    console.log(item.checked);
+    console.log(item.value)
+
+    data = {
+        url: v300,
+        params: {
+            code: "markstatus",
+            uuid: item.value,
+            status: item.checked,
+        },
+    };
+    const query = encodeQuery(data);
+    const response = await fetch(query);
+    const res = await response.json();
+    if (spin.style.display === 'block') {
+        spin.style.display = 'none';
+        checkbox.style.display = 'block';
+    }
+    console.log("res", res);
+    if (response.status != 200) alert("Request returned status code", res.status);
+    if (response.status === 200) {
+        // list.innerHTML = "";
+        console.log(res.status);
+        if (res.status === "SUCCESS") {
+            if (item.checked === true) {
+                document.getElementById(checkboxId).checked = true;
+            } else if (item.checked === false) {
+                document.getElementById(checkboxId).checked = false;
+            } else {
+                console.error();
+            }
+        }
+    }
+}
+
+
 async function problemsbyemail() {
-    const home = document.getElementById("problemstatements")
+    const list = document.getElementById("PSList");
+    list.innerHTML = `<h4>Loading Please wait...</h4>`;
     const user = JSON.parse(sessionStorage.getItem("user"))
     // console.log("user", user.user);
     const email = user.user.email
-    home.innerHTML = `<h4>Loading Please Wait...</h4>`
 
     data = {
         url: v300,
@@ -251,31 +331,102 @@ async function problemsbyemail() {
     // console.log("res", PS)
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
-        home.innerHTML = ""
-        if (PS.length == 0) home.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
+        list.innerHTML = ""
+        if (PS.length == 0) list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
         else {
             PS.forEach(i => {
-                let descript
-                if (i.description) descript = description
-                else {
-                    descript = i.d0 + i.d1 + i.d2 + i.d3 + i.d4 + i.d5
+                const checkboxId = `check-${i.uuid}`;
+                const spinId = `spin-${i.uuid}`
+    
+                const formattedDate = formatTimestamp(`${i.timestamp}`);
+    
+                // console.log(`${i.timestamp}`)
+                // console.log(formattedDate)
+    
+                if (!i.tag) {
+                    list.innerHTML += `
+                <div id="${i.uuid}" class="flex-container">
+                    <div class="row-tick">
+                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;">
+                        <div class="loader" id="${spinId}" style="display: none;"></div>
+                    </div>
+                    <div class="row-title-bg">
+                        <div class="row-title-ps-title">
+                            ${i.title}
+                        </div>
+                        <div class="row-title-ps-domain">
+                            ${i.domain}
+                        </div>
+                        <div class="row-title-ps-number">
+                            ${i.uuid}
+                            <div class="row-title-ps-time">${formattedDate}</div>
+                        </div>
+                    </div>
+                    <div class="row-desc-bg">
+                        <div class="row-desc-ps-desc">
+                            ${i.description}
+                        </div>
+                    </div>
+                    <div class="row-sol-bg">
+                        <div class="row-sol-ps-sol">
+                            ${i.solution}
+                        </div>
+                    </div>
+                    <div class="row-img-bg">
+                        <div class="row-img-flex">
+                            <div class="row-img-view-picture-icon"></div>
+                            <div class="row-img-info-icon"></div>
+                            <div class="row-img-add-comment-icon"></div>
+                        </div>
+                        <div class="row-img-font">
+                            View More
+                        </div>
+                    </div>
+                </div>
+                `;
+                } else if (i.tag === "true") {
+                    list.innerHTML += `
+                <div id="${i.uuid}" class="flex-container">
+                    <div class="row-tick">
+                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;" checked>
+                        <div class="loader" id="${spinId}" style="display: none;"></div>
+                    </div>
+                    <div class="row-title-bg">
+                        <div class="row-title-ps-title">
+                            ${i.title}
+                        </div>
+                        <div class="row-title-ps-domain">
+                            ${i.domain}
+                        </div>
+                        <div class="row-title-ps-number">
+                            ${i.uuid}
+                            <div class="row-title-ps-time">${formattedDate}</div>
+                        </div>
+                    </div>
+                    <div class="row-desc-bg">
+                        <div class="row-desc-ps-desc">
+                            ${i.description}
+                        </div>
+                    </div>
+                    <div class="row-sol-bg">
+                        <div class="row-sol-ps-sol">
+                            ${i.solution}
+                        </div>
+                    </div>
+                    <div class="row-img-bg">
+                        <div class="row-img-flex">
+                            <div class="row-img-view-picture-icon"></div>
+                            <div class="row-img-info-icon"></div>
+                            <div class="row-img-add-comment-icon"></div>
+                        </div>
+                        <div class="row-img-font">
+                            View More
+                        </div>
+                    </div>
+                </div>
+                `
+                } else {
                 }
-                home.innerHTML += `
-        <div class="container-fluid m-2 border shadow">
-        <div class="row">
-            <div class="col-sm border">
-                <div class="m-1">${i.uuid}</div>
-                <div class="m-1 timestamp">${i.timestamp}</div>
-            </div>
-            <div class="col-sm-2 border ">
-                <div class="mb-2 text-center">${i.title}</div>
-                <div>${i.domain}</div>
-            </div>
-            <div class="col-sm-6 border text-center">${descript}</div>
-            <div class="col-sm-3 border text-center">${i.d6}</div>
-        </div>
-        </div>
-        `
             })
         }
 
