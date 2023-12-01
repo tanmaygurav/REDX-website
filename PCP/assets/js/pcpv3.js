@@ -1,52 +1,58 @@
-const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
-const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
+const v200 =
+    "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
+const v300 =
+    "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
 /* Onpage load triggers */
 
-var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
-var searchby = "NA"
-var medialist = []
+var activefilter = {
+    domain: "Clear Filter",
+    program: "Clear Filter",
+    status: "Clear Filter",
+};
+var searchby = "NA";
+var medialist = [];
 if (window.location.pathname == "/PCP/pcpHome.html") {
-    getuser()
-    getPS()
-    loadfilters()
+    getuser();
+    getPS();
+    loadfilters();
 }
 if (window.location.pathname == "/PCP/homev3.html") {
-    problemsbyemail()
-    getactivedomains()
+    problemsbyemail();
+    getactivedomains();
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
-    newusers()
+    newusers();
 }
 
 function getuser() {
-    const user = sessionStorage.getItem('user')
+    const user = sessionStorage.getItem("user");
     if (user) {
-        // TODO: set profile name 
-        document.getElementById('profile-name').innerText = JSON.parse(user).user.name
+        // TODO: set profile name
+        document.getElementById("profile-name").innerText =
+            JSON.parse(user).user.name;
     } else {
         // TODO: alert and redirect to Auth
-        alert("Session expired, please login")
-        window.location = ("/PCP/pcpauth.html")
+        alert("Session expired, please login");
+        window.location = "/PCP/pcpauth.html";
     }
 }
 
 /* Onpage load triggers */
 
-
 /* Student Page functions */
-const form = document.getElementById('ppform');
+const form = document.getElementById("ppform");
 function ppformsubmit() {
     console.log("Submit clicked");
-    const user = JSON.parse(sessionStorage.getItem("user"))
-    var domain = document.getElementById("ActiveDomainbtn").innerText
-    var title = document.getElementById("PSTitle").value
-    var description = document.getElementById("PSDescription").value
-    var solution = document.getElementById("PSSolution").value
-    var media = JSON.stringify(medialist)
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    var domain = document.getElementById("ActiveDomainbtn").innerText;
+    var title = document.getElementById("PSTitle").value;
+    var description = document.getElementById("PSDescription").value;
+    var solution = document.getElementById("PSSolution").value;
+    var media = JSON.stringify(medialist);
     if (PSformval(user, domain, title, description)) {
         console.log("Submitted");
-        submitpp(user, domain, title, description, media, solution)
+        submitpp(user, domain, title, description, media, solution);
     }
 }
 
@@ -54,59 +60,57 @@ async function submitpp(user, domain, title, description, media, solution) {
     data = {
         url: v300,
         params: {
-            'code': 'addpp',
-            'email': user.user.email,
-            'name': user.user.name,
-            'stdID': user.user.roll_id,
-            'program': user.user.program,
-            'domain': domain,
-            'title': title,
-            'description': description,
-            'media': media,
-            'solution': solution,
-        }
-    }
-    const query = encodeQuery(data)
+            code: "addpp",
+            email: user.user.email,
+            name: user.user.name,
+            stdID: user.user.roll_id,
+            program: user.user.program,
+            domain: domain,
+            title: title,
+            description: description,
+            media: media,
+            solution: solution,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (res.status == "SUCCESS") {
-        Swal.fire("Success", "Pain Point has been submitted", "success")
-        window.location.reload()
-    }
-    else Swal.fire("Upload failed", res.message, "error")
+        Swal.fire("Success", "Pain Point has been submitted", "success");
+        window.location.reload();
+    } else Swal.fire("Upload failed", res.message, "error");
 }
-
 
 function PSformval(user, domain, title, description) {
     if (user == "") {
         console.log("no user");
-        Swal.fire("user not found please login and try again", "", "error")
-        return false
+        Swal.fire("user not found please login and try again", "", "error");
+        return false;
     }
     if (domain == "Select Domain") {
         console.log("no domain");
-        Swal.fire("Please select domain", "", "info")
-        return false
+        Swal.fire("Please select domain", "", "info");
+        return false;
     }
 
     if (title.length <= 0) {
         console.log("no title");
-        Swal.fire("Please Enter Title", "", "info")
-        return false
+        Swal.fire("Please Enter Title", "", "info");
+        return false;
     }
     if (description.length <= 0) {
         console.log("no description");
-        Swal.fire("Please Enter Description", "", "info")
-        return false
+        Swal.fire("Please Enter Description", "", "info");
+        return false;
     }
-    return true
+    return true;
 }
 
 function adduploadbtn() {
-    const media = document.getElementById("Media")
+    const media = document.getElementById("Media");
 
     console.log("media", media.children.length);
-    var count = 0 + media.children.length
+    var count = 0 + media.children.length;
     media.innerHTML += `
     
         <div class="input-group" id="uploadgroup${count}">
@@ -114,7 +118,7 @@ function adduploadbtn() {
             <div id="submit" class="btn btn-outline-secondary" onclick="upload(${count})" text="Upload">Upload</div>
         </div>
     
-    `
+    `;
 }
 
 async function upload(count) {
@@ -122,80 +126,82 @@ async function upload(count) {
 
     const fr = new FileReader();
     fr.readAsArrayBuffer(file.files[0]);
-    fr.onload = f => {
-        loading(count)
-        const url = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec";  // <--- Please set the URL of Web Apps.
+    fr.onload = (f) => {
+        loading(count);
+        const url =
+            "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec"; // <--- Please set the URL of Web Apps.
         // https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?
-        const qs = new URLSearchParams({ filename: file.files[0].name, mimeType: file.files[0].type });
+        const qs = new URLSearchParams({
+            filename: file.files[0].name,
+            mimeType: file.files[0].type,
+        });
         fetch(`${url}?${qs}`, {
-            method: "POST", body: JSON.stringify([...new Int8Array(f.target.result)]), redirect: 'follow', headers: {
+            method: "POST",
+            body: JSON.stringify([...new Int8Array(f.target.result)]),
+            redirect: "follow",
+            headers: {
                 "Content-Type": "text/plain;charset=utf-8",
             },
         })
-            .then(res => res.json())
-            .then(e => checkresult(e, count))  // <--- You can retrieve the returned value here.
-            .catch(err => handlerror("upload", err));
-    }
+            .then((res) => res.json())
+            .then((e) => checkresult(e, count)) // <--- You can retrieve the returned value here.
+            .catch((err) => handlerror("upload", err));
+    };
 }
-
 
 function loading(count) {
     const file = document.getElementById(`uploadgroup${count}`);
     document.getElementById(`submitbtn`).setAttribute("disabled", "disabled");
-    file.innerHTML =
-        `
+    file.innerHTML = `
     <div class="loader"></div>
-    `
+    `;
 }
 
 function checkresult(result, count) {
-    document.getElementById(`uploadgroup${count}`).innerHTML = '';
+    document.getElementById(`uploadgroup${count}`).innerHTML = "";
     if (result.fileUrl) {
-        medialist.push(result)
+        medialist.push(result);
         // sessionStorage.setItem("medialist",JSON.stringify(medialist))
-        displayuploads()
+        displayuploads();
         document.getElementById(`submitbtn`).removeAttribute("disabled");
     } else {
-        file.innerHTML =
-            `
+        file.innerHTML = `
     <div>${result}</div>
-    `
+    `;
     }
 }
 
 function displayuploads() {
     const files = document.getElementById(`Media`);
-    medialist.forEach(i => {
+    medialist.forEach((i) => {
         files.innerHTML += `
         <div class="input-group mb-3">
             <span  class="form-control"><a href="${i.fileUrl}" target="_blank">${i.filename}</a></span>
             <button class="btn btn-outline-secondary" type="button" onclick="deletefile('${i.fileId}')"><img class="del"
                     src="./assets/img/delete.png" alt="delete" srcset=""></button>
         </div>
-        `
-    })
+        `;
+    });
 }
 
 async function deletefile(fileId) {
     data = {
         url: v300,
         params: {
-            'code': 'deleteFile',
-            'fileId': fileId
-        }
-    }
-    const query = encodeQuery(data)
+            code: "deleteFile",
+            fileId: fileId,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
-    setactivedomains(res)
+    setactivedomains(res);
 }
 
 function getcurrentfilesinsession() {
     try {
-        return sessionStorage.getItem('currentfilesinsession')
-    } catch (error) {
-
-    }
+        return sessionStorage.getItem("currentfilesinsession");
+    } catch (error) { }
 }
 
 function openAdd() {
@@ -209,38 +215,39 @@ function closeAdd() {
 
 function handlerror(fn, error) {
     console.error(fn, error);
-    Swal.fire("Error while uploading", error, "error")
+    Swal.fire("Error while uploading", error, "error");
 }
 
 async function getactivedomains() {
     data = {
         url: v300,
         params: {
-            'code': 'getactivedomains',
-        }
-    }
-    const query = encodeQuery(data)
+            code: "getactivedomains",
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
-    if (response.status != 200) alert("Request returned status code", response.status);
+    if (response.status != 200)
+        alert("Request returned status code", response.status);
     if (response.status === 200) {
-        setactivedomains(res)
+        setactivedomains(res);
     }
     // TODO: error handling
 }
 
 function setactivedomains(res) {
-    const ActiveDomain = document.getElementById("ActiveDomain")
-    ActiveDomain.innerHTML = ""
-    const domainlist = res.domain
-    domainlist.forEach(i => {
-        ActiveDomain.innerHTML += `<li><div class="dropdown-item" onclick=selectdomain(this)>${i}</div></li>`
-    })
+    const ActiveDomain = document.getElementById("ActiveDomain");
+    ActiveDomain.innerHTML = "";
+    const domainlist = res.domain;
+    domainlist.forEach((i) => {
+        ActiveDomain.innerHTML += `<li><div class="dropdown-item" onclick=selectdomain(this)>${i}</div></li>`;
+    });
 }
 
 function selectdomain(item) {
-    const ActiveDomainbtn = document.getElementById("ActiveDomainbtn")
-    ActiveDomainbtn.innerText = item.innerText
+    const ActiveDomainbtn = document.getElementById("ActiveDomainbtn");
+    ActiveDomainbtn.innerText = item.innerText;
 }
 
 function formatTimestamp(timestamp) {
@@ -248,8 +255,18 @@ function formatTimestamp(timestamp) {
 
     // Months array to convert numeric month to string
     const months = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
     ];
 
     // Get day, month, year
@@ -259,10 +276,10 @@ function formatTimestamp(timestamp) {
 
     // Get hours and minutes
     let hours = date.getHours();
-    const minutes = ('0' + date.getMinutes()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
 
     // AM or PM
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const ampm = hours >= 12 ? "PM" : "AM";
 
     // Convert hours to 12-hour format
     hours = hours % 12;
@@ -275,23 +292,22 @@ function formatTimestamp(timestamp) {
 }
 
 async function tag(item) {
-
     const checkboxId = `check-${item.value}`;
     const spinId = `spin-${item.value}`;
 
     const checkbox = document.getElementById(checkboxId);
-    const spin = document.getElementById(spinId)
+    const spin = document.getElementById(spinId);
 
-    if (spin.style.display === 'none') {
-        spin.style.display = 'block';
-        checkbox.style.display = 'none';
+    if (spin.style.display === "none") {
+        spin.style.display = "block";
+        checkbox.style.display = "none";
     }
 
     // Convert false to empty string
-    const statusValue = item.checked ? item.checked : '';
+    const statusValue = item.checked ? item.checked : "";
 
     console.log(statusValue);
-    console.log(item.value)
+    console.log(item.value);
 
     data = {
         url: v300,
@@ -304,9 +320,9 @@ async function tag(item) {
     const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
-    if (spin.style.display === 'block') {
-        spin.style.display = 'none';
-        checkbox.style.display = 'block';
+    if (spin.style.display === "block") {
+        spin.style.display = "none";
+        checkbox.style.display = "block";
     }
     console.log("res", res);
     if (response.status != 200) alert("Request returned status code", res.status);
@@ -325,34 +341,34 @@ async function tag(item) {
     }
 }
 
-
 async function problemsbyemail() {
     const list = document.getElementById("PSList");
     list.innerHTML = `<h4>Loading Please wait...</h4>`;
-    const user = JSON.parse(sessionStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"));
     // console.log("user", user.user);
-    const email = user.user.email
+    const email = user.user.email;
 
     data = {
         url: v300,
         params: {
-            'code': 'email',
-            'email': email
-        }
-    }
-    const query = encodeQuery(data)
+            code: "email",
+            email: email,
+        },
+    };
+    const query = encodeQuery(data);
     // console.log("query", query)
     const res = await fetch(query);
     const PS = await res.json();
     // console.log("res", PS)
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
-        list.innerHTML = ""
-        if (PS.length == 0) list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
+        list.innerHTML = "";
+        if (PS.length == 0)
+            list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`;
         else {
-            PS.forEach(i => {
+            PS.forEach((i) => {
                 const checkboxId = `check-${i.uuid}`;
-                const spinId = `spin-${i.uuid}`
+                const spinId = `spin-${i.uuid}`;
 
                 const formattedDate = formatTimestamp(`${i.timestamp}`);
 
@@ -440,12 +456,11 @@ async function problemsbyemail() {
                         </div>
                     </div>
                 </div>
-                `
+                `;
                 } else {
                 }
-            })
+            });
         }
-
     }
 }
 /* Student Page functions */
@@ -455,42 +470,41 @@ async function loadfilters() {
     data = {
         url: v300,
         params: {
-            'code': 'getfilters'
-        }
-    }
-    const query = encodeQuery(data)
+            code: "getfilters",
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-        const domainfilter = document.getElementById("domainfilter")
-        const programfilter = document.getElementById("programfilter")
-        const Statusfilter = document.getElementById("Statusfilter")
+        const domainfilter = document.getElementById("domainfilter");
+        const programfilter = document.getElementById("programfilter");
+        const Statusfilter = document.getElementById("Statusfilter");
 
-        programfilter.innerHTML = ""
-        domainfilter.innerHTML = ""
-        Statusfilter.innerHTML = ""
+        programfilter.innerHTML = "";
+        domainfilter.innerHTML = "";
+        Statusfilter.innerHTML = "";
 
-        const domainlist = res.domain
-        const programlist = res.program
-        programfilter.innerHTML = `<li><div class="dropdown-item" onclick=programactive(this)>Clear Filter</div></li>`
-        domainfilter.innerHTML = `<li><div class="dropdown-item" onclick=domainactive(this)>Clear Filter</div></li>`
+        const domainlist = res.domain;
+        const programlist = res.program;
+        programfilter.innerHTML = `<li><div class="dropdown-item" onclick=programactive(this)>Clear Filter</div></li>`;
+        domainfilter.innerHTML = `<li><div class="dropdown-item" onclick=domainactive(this)>Clear Filter</div></li>`;
 
-        domainlist.forEach(i => {
-            domainfilter.innerHTML += `<li><div class="dropdown-item" onclick=domainactive(this)>${i}</div></li>`
-        })
+        domainlist.forEach((i) => {
+            domainfilter.innerHTML += `<li><div class="dropdown-item" onclick=domainactive(this)>${i}</div></li>`;
+        });
 
-        programlist.forEach(i => {
-            programfilter.innerHTML += `<li><div class="dropdown-item" onclick=programactive(this)>${i}</div></li>`
-        })
+        programlist.forEach((i) => {
+            programfilter.innerHTML += `<li><div class="dropdown-item" onclick=programactive(this)>${i}</div></li>`;
+        });
 
         Statusfilter.innerHTML = `
         <li><div class="dropdown-item" onclick=Statusactive(this)>Clear Filter</div></li>
         <li><div class="dropdown-item" onclick=Statusactive(this)>Solved</div></li>
         <li><div class="dropdown-item" onclick=Statusactive(this)>UnSolved</div></li>
         <li><div class="dropdown-item" onclick=Statusactive(this)>UnMarked</div></li>
-        `
-
+        `;
     }
 }
 /* get Filters */
@@ -499,55 +513,54 @@ let programfilteractive = null;
 let statusfilteractive = null;
 
 function domainactive(div) {
-    const filterbtn = document.getElementById("filterdomainbtn")
-    if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Domain"
-    else filterbtn.innerText = div.innerText
-    activefilter.domain = div.innerText
-    getPS()
+    const filterbtn = document.getElementById("filterdomainbtn");
+    if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Domain";
+    else filterbtn.innerText = div.innerText;
+    activefilter.domain = div.innerText;
+    getPS();
 }
 
 function programactive(div) {
-    const filterbtn = document.getElementById("filterprogrambtn")
-    if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Program"
-    else filterbtn.innerText = div.innerText
-    activefilter.program = div.innerText
-    getPS()
-
+    const filterbtn = document.getElementById("filterprogrambtn");
+    if (div.innerText == "Clear Filter")
+        filterbtn.innerText = "Filter by Program";
+    else filterbtn.innerText = div.innerText;
+    activefilter.program = div.innerText;
+    getPS();
 }
 
 function Statusactive(div) {
-    const filterbtn = document.getElementById("Statusfilterbtn")
-    if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Status"
-    else filterbtn.innerText = div.innerText
-    var statustmp
-    if (div.innerText == "Solved") statustmp = "1"
-    else if (div.innerText == "UnSolved") statustmp = "0"
-    else if (div.innerText == "UnMarked") statustmp = ""
-    else if (div.innerText == "Clear Filter") statustmp = "Clear Filter"
-    activefilter.status = statustmp
-    getPS()
+    const filterbtn = document.getElementById("Statusfilterbtn");
+    if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Status";
+    else filterbtn.innerText = div.innerText;
+    var statustmp;
+    if (div.innerText == "Solved") statustmp = "1";
+    else if (div.innerText == "UnSolved") statustmp = "0";
+    else if (div.innerText == "UnMarked") statustmp = "";
+    else if (div.innerText == "Clear Filter") statustmp = "Clear Filter";
+    activefilter.status = statustmp;
+    getPS();
 }
-
 
 /* Home left pane */
 async function getPS() {
-    const PSS = document.getElementById("PSS")
-    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
+    const PSS = document.getElementById("PSS");
+    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`;
     data = {
         url: v300,
         params: {
-            'code': 'readPS'
-        }
-    }
-    const query = encodeQuery(data)
-    console.log("query", query)
+            code: "readPS",
+        },
+    };
+    const query = encodeQuery(data);
+    console.log("query", query);
     const res = await fetch(query);
     const PS = await res.json();
     if (res.status != 200) alert("Request returnde status code", res.status);
     if (res.status === 200) {
-        PSS.innerHTML = ""
+        PSS.innerHTML = "";
 
-        PS.forEach(i => {
+        PS.forEach((i) => {
             let divClass = "btn scrollable-content";
             if (i.tag === "0") {
                 divClass = "btn scrollable-content svg-yellow";
@@ -555,84 +568,88 @@ async function getPS() {
                 divClass = "btn scrollable-content svg-green";
             }
 
-            if (activefilter.domain == "Clear Filter"
-                && activefilter.program == "Clear Filter"
-                && activefilter.status == "Clear Filter") applyfilter(i, divClass, 1)
+            if (
+                activefilter.domain == "Clear Filter" &&
+                activefilter.program == "Clear Filter" &&
+                activefilter.status == "Clear Filter"
+            )
+                applyfilter(i, divClass, 1);
 
             if (activefilter.domain != "Clear Filter") {
-                if (activefilter.status != "Clear Filter") { if (activefilter.domain == i.domain && activefilter.status == i.tag) applyfilter(i, divClass, 2) }
-                else { if (activefilter.domain == i.domain) applyfilter(i, divClass, 2) }
+                if (activefilter.status != "Clear Filter") {
+                    if (activefilter.domain == i.domain && activefilter.status == i.tag)
+                        applyfilter(i, divClass, 2);
+                } else {
+                    if (activefilter.domain == i.domain) applyfilter(i, divClass, 2);
+                }
+            } else if (activefilter.program != "Clear Filter") {
+                if (activefilter.status != "Clear Filter") {
+                    if (activefilter.program == i.program && activefilter.status == i.tag)
+                        applyfilter(i, divClass, 3);
+                } else {
+                    if (activefilter.program == i.program) applyfilter(i, divClass, 3);
+                }
+            } else if (activefilter.status != "Clear Filter") {
+                if (activefilter.status == i.tag) applyfilter(i, divClass, 3);
             }
-
-            else if (activefilter.program != "Clear Filter") {
-                if (activefilter.status != "Clear Filter") { if (activefilter.program == i.program && activefilter.status == i.tag) applyfilter(i, divClass, 3) }
-                else { if (activefilter.program == i.program) applyfilter(i, divClass, 3) }
-            }
-
-            else if (activefilter.status != "Clear Filter") {
-                if (activefilter.status == i.tag) applyfilter(i, divClass, 3)
-            }
-
         });
     }
 }
 
 function applyfilter(i, divClass, case1) {
-    const PSS = document.getElementById("PSS")
+    const PSS = document.getElementById("PSS");
     console.log("case", case1);
-    PSS.innerHTML +=
-        `<div class="${divClass}" onclick="handleDivClick(this, '${i.uuid}')">
+    PSS.innerHTML += `<div class="${divClass}" onclick="handleDivClick(this, '${i.uuid}')">
         <div class="title-left">${i.title}</div>
         <div class="domain-left">${i.domain}</div>
-    </div>`
+    </div>`;
 }
 
 function searchbyfn(div) {
-    searchbybtn = document.getElementById("searchbybtn")
-    searchbybtn.innerText = div.innerText
+    searchbybtn = document.getElementById("searchbybtn");
+    searchbybtn.innerText = div.innerText;
 }
 
 async function search() {
-    searchbybtn = document.getElementById("searchbybtn")
-    searchcat = searchbybtn.innerText
-    console.log("searchcat", searchcat)
+    searchbybtn = document.getElementById("searchbybtn");
+    searchcat = searchbybtn.innerText;
+    console.log("searchcat", searchcat);
     // if (!["Search By", "Student ID", "Student Name", "Title"].includes(searchcat)) alert("Please Select a Category in search by dropdown")
     // else {
-    var searchtext = document.getElementById("searchtext").value
+    var searchtext = document.getElementById("searchtext").value;
     console.log("searchtext", searchtext.length);
     // if (searchtext.length < 3) alert("Please enter atleast 3 characters")
     // else {
-    const PSS = document.getElementById("PSS")
-    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
+    const PSS = document.getElementById("PSS");
+    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`;
     data = {
         url: v300,
         params: {
-            'code': 'readPS'
-        }
-    }
-    const query = encodeQuery(data)
+            code: "readPS",
+        },
+    };
+    const query = encodeQuery(data);
     const res = await fetch(query);
     const PS = await res.json();
     if (res.status != 200) alert("Request returnde status code", res.status);
     if (res.status === 200) {
-        PSS.innerHTML = ""
+        PSS.innerHTML = "";
 
         const options = {
             includeScore: true,
             // Search in `author` and in `tags` array
-            keys: ['name', 'title', 'std_ID', 'domain', 'tag']
-        }
+            keys: ["name", "title", "std_ID", "domain", "tag"],
+        };
 
-        const fuse = new Fuse(PS, options)
+        const fuse = new Fuse(PS, options);
 
-
-        const searchresult = fuse.search(searchtext)
-        console.log("search result", searchresult)
+        const searchresult = fuse.search(searchtext);
+        console.log("search result", searchresult);
         let sortedres = searchresult.sort(function (a, b) {
-            return a.refIndex - b.refIndex
-        })
+            return a.refIndex - b.refIndex;
+        });
 
-        sortedres.forEach(i => {
+        sortedres.forEach((i) => {
             let divClass = "btn scrollable-content";
             if (i.item.tag === "0") {
                 divClass = "btn scrollable-content svg-green";
@@ -640,19 +657,15 @@ async function search() {
                 divClass = "btn scrollable-content svg-green";
             }
 
-            PSS.innerHTML +=
-                `<div class="${divClass}" onclick="handleDivClick(this, '${i.item.uuid}')">
+            PSS.innerHTML += `<div class="${divClass}" onclick="handleDivClick(this, '${i.item.uuid}')">
                 <div class="title-left">${i.item.title}</div>
                 <div class="domain-left">${i.item.domain}</div>
-                </div>`
+                </div>`;
         });
-
     }
     // }
 
-
     // }
-
 }
 
 /* Home left pane */
@@ -663,40 +676,39 @@ async function markstatus(uuid, status) {
     data = {
         url: v300,
         params: {
-            'code': 'markstatus',
-            'uuid': uuid,
-            'status': status
-        }
-    }
-    const query = encodeQuery(data)
-    console.log("query", query)
+            code: "markstatus",
+            uuid: uuid,
+            status: status,
+        },
+    };
+    const query = encodeQuery(data);
+    console.log("query", query);
     const res = await fetch(query);
     const PS = await res.json();
     console.log("PS", PS);
     if (res.status != 200) alert("Request returnde status code", res.status);
     if (res.status === 200)
-        if (PS.error) alert(PS.error)
+        if (PS.error) alert(PS.error);
         else {
-            alert(PS.status)
+            alert(PS.status);
             // refreshDS(uuid)
         }
 }
 
 async function refreshDS() {
-    const rightpane = document.getElementById("rightpane")
+    const rightpane = document.getElementById("rightpane");
     data = {
         url: v300,
         params: {
-            'code': 'readDS',
-            'uuid': uuid,
-        }
-    }
-    const query = encodeQuery(data)
+            code: "readDS",
+            uuid: uuid,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-
         rightpane.innerHTML = `
         <div class="d-flex justify-content-between">
                 <div>
@@ -704,8 +716,12 @@ async function refreshDS() {
                     <div id="P-domain" class="domain-right">${res.domain}</div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-outline-success shadow" onclick=markstatus(${String(res.uuid)},1)>Mark Solved</button>
-                    <button type="button" class="btn btn-outline-warning shadow" onclick=markstatus(${String(res.uuid)},0)>Mark Unsolved</button>
+                    <button type="button" class="btn btn-outline-success shadow" onclick=markstatus(${String(
+            res.uuid
+        )},1)>Mark Solved</button>
+                    <button type="button" class="btn btn-outline-warning shadow" onclick=markstatus(${String(
+            res.uuid
+        )},0)>Mark Unsolved</button>
                 </div>
             </div>
             <div class="d-flex m-2">
@@ -736,91 +752,92 @@ async function refreshDS() {
                     </div>
                 </div>
             </div>,
-     <div  class="mb-3">
+        <div class="mb-3">
                 <label for="remarkedittext" class="form-label title">Remarks</label>
                 <textarea class="form-control description" id="remarkedittext" rows="3" ></textarea>
                 <div  class="mt-3 mb-3" >
                     
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(res.uuid)})>Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(
+            res.uuid
+        )})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
         </div>
-        `
-        getremarks(res.uuid)
+        `;
+        getremarks(res.uuid);
     }
 }
 
 async function saveremark(uuid) {
     console.log("info", "saveremark clicked");
-    var remarkedittext = document.getElementById("remarkedittext")
-    var remark = remarkedittext.value
+    var remarkedittext = document.getElementById("remarkedittext");
+    var remark = remarkedittext.value;
     console.log("uuid", uuid);
     data = {
         url: v300,
         params: {
-            'code': 'remark',
-            'uuid': uuid,
-            'givenby': user.user.name,
-            'remark': document.getElementById("remarkedittext").value,
-        }
-    }
-    const query = encodeQuery(data)
+            code: "remark",
+            uuid: uuid,
+            givenby: user.user.name,
+            remark: document.getElementById("remarkedittext").value,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-        getremarks(uuid)
+        getremarks(uuid);
     }
 }
 
 async function getremarks(uuid) {
-    const RemarksSection = document.getElementById("RemarksSection")
+    const RemarksSection = document.getElementById("RemarksSection");
     data = {
         url: v300,
         params: {
-            'code': 'readremarks',
-            'uuid': uuid,
-        }
-    }
-    const query = encodeQuery(data)
+            code: "readremarks",
+            uuid: uuid,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
         let sortedres = res.sort(function (a, b) {
-            return b.timestamp.localeCompare(a.timestamp)
-        })
+            return b.timestamp.localeCompare(a.timestamp);
+        });
 
-        RemarksSection.innerHTML = ""
+        RemarksSection.innerHTML = "";
 
-        sortedres.forEach(i => {
+        sortedres.forEach((i) => {
             RemarksSection.innerHTML += `
             <div class="card shadow p-2">
                 <div class="d-flex flex-row">
                     <div class="title">${i.givenby} : &nbsp </div><div class="title-left"> ${i.remark}</div>
                 </div>
             </div>
-            `
-        })
-
+            `;
+        });
     }
 }
 /* Home right pane */
 
 /* Abstraction */
 function encodeQuery(data) {
-    let query = data.url
+    let query = data.url;
     for (let d in data.params)
-        query += encodeURIComponent(d) + '='
-            + encodeURIComponent(data.params[d]) + '&';
-    return query.slice(0, -1)
+        query +=
+            encodeURIComponent(d) + "=" + encodeURIComponent(data.params[d]) + "&";
+    return query.slice(0, -1);
 }
 /* left pane div active */
 let activeDiv = null;
 function handleDivClick(element, id) {
     // console.log("Clicked div with ID:", id);
-    displayDS(id)
+    displayDS(id);
     if (activeDiv) {
         activeDiv.classList.remove("active");
     }
@@ -829,23 +846,22 @@ function handleDivClick(element, id) {
 }
 
 async function displayDS(uuid) {
-    const rightpane = document.getElementById("rightpane")
+    const rightpane = document.getElementById("rightpane");
     rightpane.innerHTML = `
     <h4>Loading Please wait...</h4>
     `;
     data = {
         url: v300,
         params: {
-            'code': 'readDS',
-            'uuid': uuid,
-        }
-    }
-    const query = encodeQuery(data)
+            code: "readDS",
+            uuid: uuid,
+        },
+    };
+    const query = encodeQuery(data);
     const response = await fetch(query);
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-
         rightpane.innerHTML = `
         <div class="d-flex justify-content-between">
                 <div>
@@ -853,8 +869,12 @@ async function displayDS(uuid) {
                     <div id="P-domain" class="domain-right">${res.domain}</div>
                 </div>
                 <div>
-                    <button id="solvedbtn" type="button" class="btn btn-outline-success shadow" onclick=markstatus(${String(res.uuid)},1)>Mark Solved</button>
-                    <button id="unsolvedbtn" type="button" class="btn btn-outline-warning shadow" onclick=markstatus(${String(res.uuid)},0)>Mark Unsolved</button>
+                    <button id="solvedbtn" type="button" class="btn btn-outline-success shadow" onclick=markstatus(${String(
+            res.uuid
+        )},1)>Mark Solved</button>
+                    <button id="unsolvedbtn" type="button" class="btn btn-outline-warning shadow" onclick=markstatus(${String(
+            res.uuid
+        )},0)>Mark Unsolved</button>
                 </div>
             </div>
             <div class="d-flex m-2">
@@ -894,26 +914,26 @@ async function displayDS(uuid) {
                 <textarea class="form-control description" id="remarkedittext" rows="3" ></textarea>
                 <div class="mt-3 mb-3">
                     
-                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(res.uuid)})>Save</button>
+                    <button type="button" class="btn btn-outline-primary shadow remarkbtn"  onclick=saveremark(${String(
+            res.uuid
+        )})>Save</button>
                 </div>
                 <div id="RemarksSection"></div>
             </div>
         </div>
-        `
-        getremarks(res.uuid)
+        `;
+        getremarks(res.uuid);
 
-        const tag = res.tag
+        const tag = res.tag;
         if (tag == 1) {
-            var btnsol = document.getElementById("solvedbtn")
-            btnsol.classList.add("active")
+            var btnsol = document.getElementById("solvedbtn");
+            btnsol.classList.add("active");
         }
         if (tag == 0) {
-            var btnsol = document.getElementById("unsolvedbtn")
-            btnsol.classList.add("active")
+            var btnsol = document.getElementById("unsolvedbtn");
+            btnsol.classList.add("active");
         }
     }
-
-
 }
 
 function accessrequests() {
@@ -921,46 +941,43 @@ function accessrequests() {
         if (user.user.access_status == "ADMIN") {
             // alert("Under Development")
             // alert("Redirected")
-            window.location.href = "/PCP/pcprequest.html"
+            window.location.href = "/PCP/pcprequest.html";
         } else {
-            alert("Access Denied")
-            console.log("user", user)
+            alert("Access Denied");
+            console.log("user", user);
         }
-    } else { alert("user not found") }
+    } else {
+        alert("user not found");
+    }
 }
-
-
 
 function logout() {
-    sessionStorage.removeItem("user")
-    window.location = "/PCP/pcpauth.html"
-
+    sessionStorage.removeItem("user");
+    window.location = "/PCP/pcpauth.html";
 }
 
-
 async function newusers() {
-    const newuser = document.getElementById("newusers")
-    newuser.innerHTML = `<h4>Loading Please Wait...</h4>`
+    const newuser = document.getElementById("newusers");
+    newuser.innerHTML = `<h4>Loading Please Wait...</h4>`;
 
     data = {
         url: v300,
         params: {
-            'code': 'getnewusers'
-        }
-    }
-    const query = encodeQuery(data)
+            code: "getnewusers",
+        },
+    };
+    const query = encodeQuery(data);
     // console.log("query", query)
     const res = await fetch(query);
     const PS = await res.json();
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
-        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error");
         else {
-
-            newuser.innerHTML = ""
-            if (PS.length == 0) newuser.innerHTML = `<h1>No new request</h1>`
+            newuser.innerHTML = "";
+            if (PS.length == 0) newuser.innerHTML = `<h1>No new request</h1>`;
             else {
-                PS.forEach(i => {
+                PS.forEach((i) => {
                     newuser.innerHTML += `
             <div class="card m-3 shadow">
                     <div class="card-body">
@@ -980,37 +997,38 @@ async function newusers() {
                     </div>
                 </div>
             </div>
-    `
-                })
+    `;
+                });
             }
         }
-
     }
 }
 
 async function handlerequest(btn) {
-    swal.fire("Please wait")
-    const status = btn.innerText
-    const userID = btn.id
-    let code = "rejectaccess"
+    swal.fire("Please wait");
+    const status = btn.innerText;
+    const userID = btn.id;
+    let code = "rejectaccess";
     console.log("status", status);
 
     if (status == "Accept") code = "grantaccess";
     data = {
         url: v300,
         params: {
-            'code': code,
-            'uuid': userID
-        }
-    }
-    const query = encodeQuery(data)
+            code: code,
+            uuid: userID,
+        },
+    };
+    const query = encodeQuery(data);
     // console.log("query", query)
     const res = await fetch(query);
     const PS = await res.json();
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
-        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
-        else { newusers() }
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error");
+        else {
+            newusers();
+        }
     }
 }
 /* Abstraction */
