@@ -1,7 +1,7 @@
 .top-line {
     top: 0;
     width: auto;
-    height: 4.75rem;
+    height: auto;
     flex-shrink: 0;
     background: #F8F9FA;
 }
@@ -10,7 +10,7 @@
     padding-top: 1.19rem;
     padding-left: 7.69rem;
     width: 25rem;
-    height: 2.1875rem;
+    height: auto;
     flex-shrink: 0;
     color: #556270;
     font-family: Actor;
