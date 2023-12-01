@@ -7,6 +7,7 @@ var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "statu
 var searchby = "NA"
 var medialist = []
 if (window.location.pathname == "/PCP/pcpHome.html") {
+    getuser()
     getPS()
     loadfilters()
 }
@@ -16,6 +17,18 @@ if (window.location.pathname == "/PCP/homev3.html") {
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
     newusers()
+}
+
+function getuser() {
+    const user = sessionStorage.getItem('user')
+    if (user) {
+        // TODO: set profile name 
+        document.getElementById('profile-name').innerText = JSON.parse(user).user.name
+    } else {
+        // TODO: alert and redirect to Auth
+        alert("Session expired, please login")
+        window.location=("/PCP/pcpauth.html")
+    }
 }
 
 /* Onpage load triggers */
@@ -136,7 +149,7 @@ function loading(count) {
 }
 
 function checkresult(result, count) {
-    document.getElementById(`uploadgroup${count}`).innerHTML='';
+    document.getElementById(`uploadgroup${count}`).innerHTML = '';
     if (result.fileUrl) {
         medialist.push(result)
         // sessionStorage.setItem("medialist",JSON.stringify(medialist))
@@ -337,12 +350,12 @@ async function problemsbyemail() {
             PS.forEach(i => {
                 const checkboxId = `check-${i.uuid}`;
                 const spinId = `spin-${i.uuid}`
-    
+
                 const formattedDate = formatTimestamp(`${i.timestamp}`);
-    
+
                 // console.log(`${i.timestamp}`)
                 // console.log(formattedDate)
-    
+
                 if (!i.tag) {
                     list.innerHTML += `
                 <div id="${i.uuid}" class="flex-container">
