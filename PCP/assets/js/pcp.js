@@ -43,7 +43,7 @@ async function getPP() {
     if (res.status === 200) {
         GPP = PS
         renderpp()
-        console.log("getPP GPP", GPP);
+        // console.log("getPP GPP", GPP);
     }
 }
 
@@ -103,7 +103,7 @@ function renderpp() {
     if (filteredPP.length <= 0) {
         filteredPP = GPP
     }
-    console.log("filteredPP", filteredPP);
+    console.log("filteredPP", filteredPP.length);
     filteredPP.forEach((i) => {
         const checkboxId = `check-${i.uuid}`;
         const spinId = `spin-${i.uuid}`;
@@ -230,10 +230,11 @@ function Statusactive(div) {
     else if (div.innerText == "unTagged") statustmp = ""
     else if (div.innerText == "Clear Filter") statustmp = "Clear Filter"
     activefilter.status = statustmp
+    applyfilter()
 }
 
 function applyfilter() {
-    console.log('GPP', GPP);
+    console.log('GPP', GPP.length);
     const PSList = document.getElementById("PSList")
     PSList.innerHTML = ""
     filteredPP = []
