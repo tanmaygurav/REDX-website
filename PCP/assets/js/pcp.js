@@ -1,41 +1,58 @@
 const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
 const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
 
-/* Onpage load triggers */
+/* Global states */
 
 var activefilter = { "domain": "Clear Filter", "program": "Clear Filter", "status": "Clear Filter" }
 var searchby = "NA"
 var medialist = []
-if (window.location.pathname == "/PCP/pcpHome.html") {
+var compactview = true
+var GPP = []            //all enteries
+var filteredPP = []     //filtered all enteries
+var filters = []
+
+
+/* Global states */
+
+/* Onpage load triggers */
+function onloadfacultyhome() {
+    // if(!getuser()) return
+    // if (!getPP()) return
     getuser()
-    getPS()
-    loadfilters()
+    getPP()
+    getfilters()
+    viewselect()
 }
-if (window.location.pathname == "/PCP/homev3.html") {
+if (window.location.pathname == "/PCP/studenthome.html") {
+    getuser()
     problemsbyemail()
+    // getPP()
+
     getactivedomains()
 }
 if (window.location.pathname == "/PCP/pcprequest.html") {
+    getuser()
     newusers()
 }
 
+
+/* Onpage load triggers */
 function getuser() {
     const user = sessionStorage.getItem('user')
     if (user) {
         // TODO: set profile name 
+        console.log("user",user);
         document.getElementById('profile-name').innerText = JSON.parse(user).user.name
     } else {
         // TODO: alert and redirect to Auth
         alert("Session expired, please login")
-        window.location=("/PCP/pcpauth.html")
+        window.location = ("/PCP/pcpauth.html")
     }
 }
 
-/* Onpage load triggers */
-
 
 /* Student Page functions */
-const form = document.getElementById('ppform');
+// const form = document.getElementById('ppform');
 function ppformsubmit() {
     console.log("Submit clicked");
     const user = JSON.parse(sessionStorage.getItem("user"))
@@ -448,7 +465,7 @@ async function problemsbyemail() {
 /* Student Page functions */
 
 /* get Filters */
-async function loadfilters() {
+async function getfilters() {
     data = {
         url: v300,
         params: {
@@ -460,35 +477,39 @@ async function loadfilters() {
     const res = await response.json();
     if (response.status != 200) alert("Request returnde status code", res.status);
     if (response.status === 200) {
-        const domainfilter = document.getElementById("domainfilter")
-        const programfilter = document.getElementById("programfilter")
-        const Statusfilter = document.getElementById("Statusfilter")
-
-        programfilter.innerHTML = ""
-        domainfilter.innerHTML = ""
-        Statusfilter.innerHTML = ""
-
-        const domainlist = res.domain
-        const programlist = res.program
-        programfilter.innerHTML = `<li><div class="dropdown-item" onclick=programactive(this)>Clear Filter</div></li>`
-        domainfilter.innerHTML = `<li><div class="dropdown-item" onclick=domainactive(this)>Clear Filter</div></li>`
-
-        domainlist.forEach(i => {
-            domainfilter.innerHTML += `<li><div class="dropdown-item" onclick=domainactive(this)>${i}</div></li>`
-        })
-
-        programlist.forEach(i => {
-            programfilter.innerHTML += `<li><div class="dropdown-item" onclick=programactive(this)>${i}</div></li>`
-        })
-
-        Statusfilter.innerHTML = `
-        <li><div class="dropdown-item" onclick=Statusactive(this)>Clear Filter</div></li>
-        <li><div class="dropdown-item" onclick=Statusactive(this)>Solved</div></li>
-        <li><div class="dropdown-item" onclick=Statusactive(this)>UnSolved</div></li>
-        <li><div class="dropdown-item" onclick=Statusactive(this)>UnMarked</div></li>
-        `
-
+        filters = res
+        renderfilters()
     }
+}
+
+function renderfilters() {
+    const domainfilter = document.getElementById("domainfilter")
+    const programfilter = document.getElementById("programfilter")
+    const Statusfilter = document.getElementById("Statusfilter")
+
+    programfilter.innerHTML = ""
+    domainfilter.innerHTML = ""
+    Statusfilter.innerHTML = ""
+
+    const domainlist = filters.domain
+    const programlist = filters.program
+    programfilter.innerHTML = `<li><div class="dropdown-item" onclick=programactive(this)>Clear Filter</div></li>`
+    domainfilter.innerHTML = `<li><div class="dropdown-item" onclick=domainactive(this)>Clear Filter</div></li>`
+
+    domainlist.forEach(i => {
+        domainfilter.innerHTML += `<li><div class="dropdown-item" onclick=domainactive(this)>${i}</div></li>`
+    })
+
+    programlist.forEach(i => {
+        programfilter.innerHTML += `<li><div class="dropdown-item" onclick=programactive(this)>${i}</div></li>`
+    })
+
+    Statusfilter.innerHTML = `
+    <li><div class="dropdown-item" onclick=Statusactive(this)>Clear Filter</div></li>
+    <li><div class="dropdown-item" onclick=Statusactive(this)>Tagged</div></li>
+    <li><div class="dropdown-item" onclick=Statusactive(this)>unTagged</div></li>
+    `
+
 }
 /* get Filters */
 let domainfilteractive = null;
@@ -496,19 +517,21 @@ let programfilteractive = null;
 let statusfilteractive = null;
 
 function domainactive(div) {
-    const filterbtn = document.getElementById("filterdomainbtn")
+    const filterbtn = document.getElementById("domainfilterbtn")
     if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Domain"
     else filterbtn.innerText = div.innerText
     activefilter.domain = div.innerText
-    getPS()
+    applyfilterspreadview()
 }
 
 function programactive(div) {
-    const filterbtn = document.getElementById("filterprogrambtn")
+    const filterbtn = document.getElementById("programfilterbtn")
     if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Program"
     else filterbtn.innerText = div.innerText
     activefilter.program = div.innerText
-    getPS()
+    console.log("program innertext", div.innerText);
+    console.log("program activefilter", activefilter);
+    applyfilterspreadview()
 
 }
 
@@ -517,23 +540,21 @@ function Statusactive(div) {
     if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Status"
     else filterbtn.innerText = div.innerText
     var statustmp
-    if (div.innerText == "Solved") statustmp = "1"
-    else if (div.innerText == "UnSolved") statustmp = "0"
-    else if (div.innerText == "UnMarked") statustmp = ""
+    if (div.innerText == "Tagged") statustmp = "true"
+    else if (div.innerText == "unTagged") statustmp = ""
     else if (div.innerText == "Clear Filter") statustmp = "Clear Filter"
     activefilter.status = statustmp
-    getPS()
 }
 
 
 /* Home left pane */
-async function getPS() {
-    const PSS = document.getElementById("PSS")
-    PSS.innerHTML = `<h4>Loading Please Wait...</h4>`
+async function getPP() {
+    const PSList = document.getElementById("PSList")
+    PSList.innerHTML = `<h4>Loading Please Wait...</h4>`
     data = {
         url: v300,
         params: {
-            'code': 'readPS'
+            'code': 'readall'
         }
     }
     const query = encodeQuery(data)
@@ -542,46 +563,49 @@ async function getPS() {
     const PS = await res.json();
     if (res.status != 200) alert("Request returnde status code", res.status);
     if (res.status === 200) {
-        PSS.innerHTML = ""
-
-        PS.forEach(i => {
-            let divClass = "btn scrollable-content";
-            if (i.tag === "0") {
-                divClass = "btn scrollable-content svg-yellow";
-            } else if (i.tag === "1") {
-                divClass = "btn scrollable-content svg-green";
-            }
-
-            if (activefilter.domain == "Clear Filter"
-                && activefilter.program == "Clear Filter"
-                && activefilter.status == "Clear Filter") applyfilter(i, divClass, 1)
-
-            if (activefilter.domain != "Clear Filter") {
-                if (activefilter.status != "Clear Filter") { if (activefilter.domain == i.domain && activefilter.status == i.tag) applyfilter(i, divClass, 2) }
-                else { if (activefilter.domain == i.domain) applyfilter(i, divClass, 2) }
-            }
-
-            else if (activefilter.program != "Clear Filter") {
-                if (activefilter.status != "Clear Filter") { if (activefilter.program == i.program && activefilter.status == i.tag) applyfilter(i, divClass, 3) }
-                else { if (activefilter.program == i.program) applyfilter(i, divClass, 3) }
-            }
-
-            else if (activefilter.status != "Clear Filter") {
-                if (activefilter.status == i.tag) applyfilter(i, divClass, 3)
-            }
-
-        });
-    }
+        GPP = PS
+        return true
+    } else return false
 }
 
-function applyfilter(i, divClass, case1) {
-    const PSS = document.getElementById("PSS")
-    console.log("case", case1);
-    PSS.innerHTML +=
-        `<div class="${divClass}" onclick="handleDivClick(this, '${i.uuid}')">
-        <div class="title-left">${i.title}</div>
-        <div class="domain-left">${i.domain}</div>
-    </div>`
+function displayspreadview() {
+    const PSList = document.getElementById("PSList")
+    PSList.innerHTML = ""
+    applyfilterspreadview()
+}
+
+function applyfilterspreadview() {
+    console.log('GPP', GPP);
+    const PSList = document.getElementById("PSList")
+    PSList.innerHTML = ""
+    filteredPP = []
+    GPP.forEach(i => {
+        if (activefilter.program != "Clear Filter") if (i.program == activefilter.program) filteredPP.push(i)
+        if (activefilter.domain != "Clear Filter") if (i.domain == activefilter.domain) filteredPP.push(i)
+        if (activefilter.status != "Clear Filter") if (i.tag == activefilter.status) filteredPP.push(i)
+    })
+    renderfilterspreadviewleft()
+}
+
+function renderfilterspreadviewleft() {
+    const PSList = document.getElementById("PSList")
+    console.log("filteredPP", filteredPP);
+    var list = GPP
+    if (!filteredPP.length <= 0) list = filteredPP
+    console.log("list", list);
+    list.forEach(i => {
+        let divClass = "btn scrollable-content";
+        if (i.tag === "0") {
+            divClass = "btn scrollable-content svg-yellow";
+        } else if (i.tag === "1") {
+            divClass = "btn scrollable-content svg-green";
+        }
+        PSList.innerHTML +=
+            `<div class="${divClass}" onclick="handleDivClick(this, '${i.uuid}')">
+            <div class="title-left">${i.title}</div>
+            <div class="domain-left">${i.domain}</div>
+            </div>`
+    })
 }
 
 function searchbyfn(div) {
@@ -804,6 +828,13 @@ async function getremarks(uuid) {
     }
 }
 /* Home right pane */
+/* Compact view */
+
+function displaycompact(){
+    
+}
+/* Compact view */
+
 
 /* Abstraction */
 function encodeQuery(data) {
@@ -1009,6 +1040,22 @@ async function handlerequest(btn) {
         if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
         else { newusers() }
     }
+}
+
+function disablealert(fn) {
+    alert("this function is disabled", fn)
+}
+
+function toggleview(){
+    compactview=!compactview
+    viewselect()
+    console.log("compactview",compactview);
+}
+
+function viewselect(){
+    if (compactview) {
+        displaycompact()
+    }else displayspreadview()
 }
 /* Abstraction */
 /* Notes

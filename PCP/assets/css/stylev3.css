@@ -252,9 +252,9 @@
 }
 
 @media (max-width: 1300px) {
-    .filter-type {
+    /* .filter-type {
         margin-left: 40rem;
-    }
+    } */
 }
 
 @media (max-width: 768px) {
@@ -268,15 +268,15 @@
         content: "PPCP";
     }
 
-    .filter-type {
+    /* .filter-type {
         margin-left: 20rem;
         font-size: 0.85rem;
-    }
+    } */
 }
 
 @media (max-width: 576px) {
-    .filter-type {
+    /* .filter-type {
         margin-left: 10rem;
         font-size: 0.75rem;
-    }
+    } */
 }
