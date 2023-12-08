@@ -16,6 +16,7 @@ var filters = []
 /* Onpage load triggers */
 function onloadfacultyhome() {
     // TODO: getpp displaypp
+    verifyuser()
     getPP()
     getfilters()
 }
@@ -43,7 +44,7 @@ async function getPP() {
     if (res.status === 200) {
         GPP = PS
         renderpp()
-        // console.log("getPP GPP", GPP);
+        console.log("getPP GPP", GPP);
     }
 }
 
@@ -65,6 +66,56 @@ async function getfilters() {
 }
 
 /* Get from DB */
+
+/* Send to DB */
+async function tag(item) {
+
+    const checkboxId = `check-${item.value}`;
+    const spinId = `spin-${item.value}`;
+
+    const checkbox = document.getElementById(checkboxId);
+    const spin = document.getElementById(spinId)
+
+    if (spin.style.display === 'none') {
+        spin.style.display = 'block';
+        checkbox.style.display = 'none';
+    }
+
+    console.log(item.checked);
+    console.log(item.value)
+
+    data = {
+        url: v300,
+        params: {
+            code: "markstatus",
+            uuid: item.value,
+            status: item.checked,
+        },
+    };
+    const query = encodeQuery(data);
+    const response = await fetch(query);
+    const res = await response.json();
+    if (spin.style.display === 'block') {
+        spin.style.display = 'none';
+        checkbox.style.display = 'block';
+    }
+    console.log("res", res);
+    if (response.status != 200) alert("Request returned status code", res.status);
+    if (response.status === 200) {
+        // list.innerHTML = "";
+        console.log(res.status);
+        if (res.status === "SUCCESS") {
+            if (item.checked === true) {
+                document.getElementById(checkboxId).checked = true;
+            } else if (item.checked === false) {
+                document.getElementById(checkboxId).checked = false;
+            } else {
+                console.error();
+            }
+        }
+    }
+}
+/* Send to DB */
 
 /* show on page functions */
 function renderfilters() {
@@ -98,6 +149,13 @@ function renderfilters() {
 }
 
 function renderpp() {
+    const user = JSON.parse(sessionStorage.getItem('user'))
+    console.log(user);
+    if (user.access_status == "ADMIN" || user.access_status == "FACULTY") renderfacultypp()
+    if (user.access_status == "STUDENT") renderstudentpp()
+}
+
+function renderfacultypp() {
     const PSlist = document.getElementById("PSList");
     PSlist.innerHTML = ""
     if (filteredPP.length <= 0) {
@@ -194,6 +252,10 @@ function renderpp() {
         } else {
         }
     });
+}
+
+function renderstudentpp() {
+console.log("renderstudent");
 }
 /* show on page functions */
 
@@ -294,6 +356,8 @@ function applyfilter() {
 
 /* Active filters */
 
+
+
 /* Abstraction */
 function encodeQuery(data) {
     let query = data.url
@@ -344,4 +408,21 @@ function formatTimestamp(timestamp) {
     return formattedDate;
 }
 
+function verifyuser() {
+    user = JSON.parse(sessionStorage.getItem("user"))
+    console.log("user", user);
+    if (user) {
+        var displayName = document.getElementById("profile-name")
+        displayName.innerText = user.name
+    } else {
+        alert("Could not fetch user, Please try Logining IN again or use a different browser")
+        window.location = "/PCP/pcpauth.html"
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem("user")
+    window.location = "/PCP/pcpauth.html"
+
+}
 /* Abstraction */

@@ -189,7 +189,7 @@
                 else {
                     const user = res
                     console.log("user", user);
-                    sessionStorage.setItem("user", JSON.stringify(res))
+                    sessionStorage.setItem("user", JSON.stringify(res.user))
                     if (user.user.access_status == "ADMIN" || user.user.access_status=="FACULTY") {
                         console.log("user.access_status", user.access_status);
                         window.location = "/PCP/facultyhome.html"}
