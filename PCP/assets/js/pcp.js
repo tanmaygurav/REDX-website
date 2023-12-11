@@ -9,22 +9,41 @@ var compactview = true
 var GPP = []            //all enteries
 var filteredPP = []     //filtered all enteries
 var filters = []
+var user
+var userrequestlist = []
 
 
 /* Global states */
 
 /* Onpage load triggers */
 function onloadfacultyhome() {
-    // TODO: getpp displaypp
     verifyuser()
     getPP()
     getfilters()
 }
 function onloadstudenthome() {
-    // TODO: getpp displaypp
+    /* TODO */
 }
 function onloadrequests() {
-    // TODO: getpp displaypp
+    displayusername()
+    /* TODO */
+    getnewrequests()
+    // rendernewrequests
+}
+
+function accessrequests() {
+    verifyuser()
+    if (user) {
+        if (user.access_status == "ADMIN") {
+            // alert("Under Development")
+            // alert("Redirected")
+            window.location.href = "/PCP/pcprequest.html"
+            displayusername()
+        } else {
+            alert("Access Denied")
+            console.log("user", user)
+        }
+    } else { alert("user not found") }
 }
 /* Onpage load triggers */
 
@@ -65,6 +84,30 @@ async function getfilters() {
     }
 }
 
+async function getnewrequests() {
+    const newuser = document.getElementById("userrequestlist")
+    newuser.innerHTML = `<h4>Loading Please Wait...</h4>`
+
+    data = {
+        url: v300,
+        params: {
+            'code': 'getnewusers'
+        }
+    }
+    const query = encodeQuery(data)
+    // console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
+        else {
+            userrequestlist = PS
+            renderrequestlist()
+        }
+
+    }
+}
 /* Get from DB */
 
 /* Send to DB */
@@ -112,6 +155,35 @@ async function tag(item) {
             } else {
                 console.error();
             }
+        }
+    }
+}
+
+async function handlenewuserrequest(btn) {
+    Swal.fire("Please wait")
+    const status = btn.innerText
+    const userID = btn.id
+    let code = "rejectaccess"
+    console.log("status", status);
+
+    if (status == "Accept") code = "grantaccess";
+    data = {
+        url: v300,
+        params: {
+            'code': code,
+            'uuid': userID
+        }
+    }
+    const query = encodeQuery(data)
+    // console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
+        else {
+            Swal.close()
+            getnewrequests()
         }
     }
 }
@@ -254,8 +326,39 @@ function renderfacultypp() {
     });
 }
 
+function renderrequestlist() {
+    const newuser = document.getElementById("userrequestlist")
+    newuser.innerHTML = ""
+    if (userrequestlist.length == 0) newuser.innerHTML = `<h1>No new request</h1>`
+    else {
+        userrequestlist.forEach(i => {
+            newuser.innerHTML += `
+    <div class="card m-3 shadow">
+            <div class="card-body">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <div>
+                    <div>UserID: ${i.uuid}</div>
+                    <div>Name:  ${i.name} </div>
+                    <div>Email:  ${i.email} </div>
+                    <div>Program:  ${i.program} </div>
+                    <div>Student Id/ Roll no. :  ${i.stdid} </div>
+                    </div>
+                    <div class="justify-center ">
+                        <div class="btn btn-outline-success btn-green d-flex flex-row m-2" onclick="handlenewuserrequest(this)" id="${i.uuid}">Accept</div>
+                        <div class="btn btn-outline-danger btn-light d-flex flex-row m-2" onclick="handlenewuserrequest(this)" id="${i.uuid}">Reject</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`
+        })
+    }
+}
+
 function renderstudentpp() {
-console.log("renderstudent");
+    /* TODO */
+    console.log("renderstudent");
 }
 /* show on page functions */
 
@@ -412,12 +515,19 @@ function verifyuser() {
     user = JSON.parse(sessionStorage.getItem("user"))
     console.log("user", user);
     if (user) {
-        var displayName = document.getElementById("profile-name")
-        displayName.innerText = user.name
+        displayusername()
+        // var displayName = document.getElementById("profile-name")
+        // displayName.innerText = user.name
     } else {
         alert("Could not fetch user, Please try Logining IN again or use a different browser")
         window.location = "/PCP/pcpauth.html"
     }
+}
+
+function displayusername() {
+    user = JSON.parse(sessionStorage.getItem("user"))
+    console.log("displayusername", user);
+    document.getElementById("profile-name").innerText = user.name
 }
 
 function logout() {
