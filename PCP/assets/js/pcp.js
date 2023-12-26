@@ -21,14 +21,16 @@ function onloadfacultyhome() {
     getPP()
     getfilters()
 }
+
 function onloadstudenthome() {
     /* TODO */
+    // load student problem statements
+    // view same as faculty
 }
+
 function onloadrequests() {
     displayusername()
-    /* TODO */
     getnewrequests()
-    // rendernewrequests
 }
 
 function accessrequests() {
@@ -63,7 +65,7 @@ async function getPP() {
     if (res.status === 200) {
         GPP = PS
         renderpp()
-        console.log("getPP GPP", GPP);
+        // console.log("getPP GPP", GPP);
     }
 }
 
@@ -222,7 +224,7 @@ function renderfilters() {
 
 function renderpp() {
     const user = JSON.parse(sessionStorage.getItem('user'))
-    console.log(user);
+    // console.log(user);
     if (user.access_status == "ADMIN" || user.access_status == "FACULTY") renderfacultypp()
     if (user.access_status == "STUDENT") renderstudentpp()
 }
@@ -280,7 +282,7 @@ function renderfacultypp() {
                     </div>
                 </div>
                 `;
-        } else if (i.tag === "true") {
+        } else if (i.tag === true) {
             PSlist.innerHTML += `
                 <div id="${i.uuid}" class="flex-container">
                     <div class="row-tick">
@@ -391,7 +393,7 @@ function Statusactive(div) {
     if (div.innerText == "Clear Filter") filterbtn.innerText = "Filter by Status"
     else filterbtn.innerText = div.innerText
     var statustmp
-    if (div.innerText == "Tagged") statustmp = "true"
+    if (div.innerText == "Tagged") statustmp = true
     else if (div.innerText == "unTagged") statustmp = ""
     else if (div.innerText == "Clear Filter") statustmp = "Clear Filter"
     activefilter.status = statustmp
@@ -399,14 +401,15 @@ function Statusactive(div) {
 }
 
 function applyfilter() {
-    console.log('GPP', GPP.length);
+    console.log('GPP', GPP);
     const PSList = document.getElementById("PSList")
     PSList.innerHTML = ""
+    console.log("activefilter",activefilter);
     filteredPP = []
     /* 3 filters active */
     if (activefilter.status != "Clear Filter" && activefilter.program != "Clear Filter" && activefilter.domain != "Clear Filter") {
         GPP.forEach(i => {
-            if (i.program == activefilter.program && i.status == activefilter.status && i.domain == activefilter.domain)
+            if (i.program == activefilter.program && i.tag == activefilter.status && i.domain == activefilter.domain)
                 filteredPP.push(i)
         })
     }
@@ -419,20 +422,20 @@ function applyfilter() {
     }
     if (activefilter.domain != "Clear Filter" && activefilter.status != "Clear Filter" && activefilter.program == "Clear Filter") {
         GPP.forEach(i => {
-            if (i.status == activefilter.status && i.domain == activefilter.domain)
+            if (i.tag == activefilter.status && i.domain == activefilter.domain)
                 filteredPP.push(i)
         })
     }
     if (activefilter.status != "Clear Filter" && activefilter.program != "Clear Filter" && activefilter.domain == "Clear Filter") {
         GPP.forEach(i => {
-            if (i.program == activefilter.program && i.status == activefilter.status)
+            if (i.program == activefilter.program && i.tag == activefilter.status)
                 filteredPP.push(i)
         })
     }
     /* 1 filter active */
     if (activefilter.status != "Clear Filter" && activefilter.program == "Clear Filter" && activefilter.domain == "Clear Filter") {
         GPP.forEach(i => {
-            if (i.status == activefilter.status)
+            if (i.tag == activefilter.status)
                 filteredPP.push(i)
         })
     }
@@ -513,7 +516,7 @@ function formatTimestamp(timestamp) {
 
 function verifyuser() {
     user = JSON.parse(sessionStorage.getItem("user"))
-    console.log("user", user);
+    // console.log("user", user);
     if (user) {
         displayusername()
         // var displayName = document.getElementById("profile-name")
@@ -526,7 +529,7 @@ function verifyuser() {
 
 function displayusername() {
     user = JSON.parse(sessionStorage.getItem("user"))
-    console.log("displayusername", user);
+    // console.log("displayusername", user);
     document.getElementById("profile-name").innerText = user.name
 }
 
