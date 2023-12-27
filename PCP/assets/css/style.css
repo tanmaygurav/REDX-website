@@ -280,3 +280,103 @@
         font-size: 0.75rem;
     }
 }
+
+/*--------------------------------------------------------------
+# Student Home / Uploadform
+--------------------------------------------------------------*/
+#uploadform {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    -ms-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    display: none;
+    width: 70%;
+    background-color: #FFF;
+    z-index: 4;
+}
+
+#uploadformbg {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+#Media{
+    overflow-y: scroll;
+    max-height: 100px;
+}
+
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #3498db;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+}
+.del{
+    height: 20px;
+}
+
+.fixedButton {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    padding: 30px;
+}
+
+.roundedFixedBtn {
+    height: 60px;
+    line-height: 80px;
+    width: 60px;
+    font-size: 2em;
+    font-weight: bold;
+    border-radius: 50%;
+    /* background-color: #4CAF50; */
+    /* color: white; */
+    text-align: center;
+    cursor: pointer;
+}
+
+.timestamp {
+    color: #000;
+    font-size: 12px;
+}
+
+/*--------------------------------------------------------------
+# Student Home / Uploadform End
+--------------------------------------------------------------*/
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

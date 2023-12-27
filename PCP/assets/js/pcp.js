@@ -24,7 +24,9 @@ function onloadfacultyhome() {
 
 function onloadstudenthome() {
     /* TODO */
-    // load student problem statements
+    displayusername()
+    getPPbyemail()
+    getactivedomains()
     // view same as faculty
 }
 
@@ -109,6 +111,147 @@ async function getnewrequests() {
         }
 
     }
+}
+
+async function getPPbyemail() {
+    const list = document.getElementById("PSList");
+    list.innerHTML = `<h4>Loading Please wait...</h4>`;
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    // console.log("user", user.user);
+    const email = user.email
+
+    data = {
+        url: v300,
+        params: {
+            'code': 'email',
+            'email': email
+        }
+    }
+    const query = encodeQuery(data)
+    // console.log("query", query)
+    const res = await fetch(query);
+    const PS = await res.json();
+    // console.log("res", PS)
+    if (res.status != 200) alert("Request returned status code", res.status);
+    if (res.status === 200) {
+        list.innerHTML = ""
+        if (PS.length == 0) list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
+        else {
+            PS.forEach(i => {
+                const checkboxId = `check-${i.uuid}`;
+                const spinId = `spin-${i.uuid}`
+
+                const formattedDate = formatTimestamp(`${i.timestamp}`);
+
+                // console.log(`${i.timestamp}`)
+                // console.log(formattedDate)
+
+                if (!i.tag) {
+                    list.innerHTML += `
+                <div id="${i.uuid}" class="flex-container">
+                    <div class="row-tick">
+                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;">
+                        <div class="loader" id="${spinId}" style="display: none;"></div>
+                    </div>
+                    <div class="row-title-bg">
+                        <div class="row-title-ps-title">
+                            ${i.title}
+                        </div>
+                        <div class="row-title-ps-domain">
+                            ${i.domain}
+                        </div>
+                        <div class="row-title-ps-number">
+                            ${i.uuid}
+                            <div class="row-title-ps-time">${formattedDate}</div>
+                        </div>
+                    </div>
+                    <div class="row-desc-bg">
+                        <div class="row-desc-ps-desc">
+                            ${i.description}
+                        </div>
+                    </div>
+                    <div class="row-sol-bg">
+                        <div class="row-sol-ps-sol">
+                            ${i.solution}
+                        </div>
+                    </div>
+                    <div class="row-img-bg">
+                        <div class="row-img-flex">
+                            <div class="row-img-view-picture-icon"></div>
+                            <div class="row-img-info-icon"></div>
+                            <div class="row-img-add-comment-icon"></div>
+                        </div>
+                        <div class="row-img-font">
+                            View More
+                        </div>
+                    </div>
+                </div>
+                `;
+                } else if (i.tag === "true") {
+                    list.innerHTML += `
+                <div id="${i.uuid}" class="flex-container">
+                    <div class="row-tick">
+                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;" checked>
+                        <div class="loader" id="${spinId}" style="display: none;"></div>
+                    </div>
+                    <div class="row-title-bg">
+                        <div class="row-title-ps-title">
+                            ${i.title}
+                        </div>
+                        <div class="row-title-ps-domain">
+                            ${i.domain}
+                        </div>
+                        <div class="row-title-ps-number">
+                            ${i.uuid}
+                            <div class="row-title-ps-time">${formattedDate}</div>
+                        </div>
+                    </div>
+                    <div class="row-desc-bg">
+                        <div class="row-desc-ps-desc">
+                            ${i.description}
+                        </div>
+                    </div>
+                    <div class="row-sol-bg">
+                        <div class="row-sol-ps-sol">
+                            ${i.solution}
+                        </div>
+                    </div>
+                    <div class="row-img-bg">
+                        <div class="row-img-flex">
+                            <div class="row-img-view-picture-icon"></div>
+                            <div class="row-img-info-icon"></div>
+                            <div class="row-img-add-comment-icon"></div>
+                        </div>
+                        <div class="row-img-font">
+                            View More
+                        </div>
+                    </div>
+                </div>
+                `
+                } else {
+                }
+            })
+        }
+
+    }
+}
+
+
+async function getactivedomains() {
+    data = {
+        url: v300,
+        params: {
+            'code': 'getactivedomains',
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    if (response.status != 200) alert("Request returned status code", response.status);
+    if (response.status === 200) {
+        setactivedomains(res)
+    }
+    // TODO: error handling
 }
 /* Get from DB */
 
@@ -364,6 +507,188 @@ function renderstudentpp() {
 }
 /* show on page functions */
 
+/* PP Upload form  */
+
+const form = document.getElementById('ppform');
+function ppformsubmit() {
+    console.log("Submit clicked");
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    var domain = document.getElementById("ActiveDomainbtn").innerText
+    var title = document.getElementById("PSTitle").value
+    var description = document.getElementById("PSDescription").value
+    var solution = document.getElementById("PSSolution").value
+    var media = JSON.stringify(medialist)
+    if (PSformval(user, domain, title, description)) {
+        console.log("Submitted");
+        submitpp(user, domain, title, description, media, solution)
+    }
+}
+
+async function submitpp(user, domain, title, description, media, solution) {
+    data = {
+        url: v300,
+        params: {
+            'code': 'addpp',
+            'email': user.email,
+            'name': user.name,
+            'stdID': user.roll_id,
+            'program': user.program,
+            'domain': domain,
+            'title': title,
+            'description': description,
+            'media': media,
+            'solution': solution,
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    if (res.status == "SUCCESS") {
+        Swal.fire("Success", "Pain Point has been submitted", "success")
+        window.location.reload()
+    }
+    else Swal.fire("Upload failed", res.message, "error")
+}
+
+
+function openAdd() {
+    document.getElementById("uploadform").style.display = "block";
+    document.getElementById("uploadformbg").style.display = "block";
+}
+function closeAdd() {
+    document.getElementById("uploadform").style.display = "none";
+    document.getElementById("uploadformbg").style.display = "none";
+}
+
+function setactivedomains(res) {
+    const ActiveDomain = document.getElementById("ActiveDomain")
+    ActiveDomain.innerHTML = ""
+    const domainlist = res.domain
+    domainlist.forEach(i => {
+        ActiveDomain.innerHTML += `<li><div class="dropdown-item" onclick=selectdomain(this)>${i}</div></li>`
+    })
+}
+
+function selectdomain(item) {
+    const ActiveDomainbtn = document.getElementById("ActiveDomainbtn")
+    ActiveDomainbtn.innerText = item.innerText
+}
+
+function PSformval(user, domain, title, description) {
+    if (user == "") {
+        console.log("no user");
+        Swal.fire("user not found please login and try again", "", "error")
+        return false
+    }
+    if (domain == "Select Domain") {
+        console.log("no domain");
+        Swal.fire("Please select domain", "", "info")
+        return false
+    }
+
+    if (title.length <= 0) {
+        console.log("no title");
+        Swal.fire("Please Enter Title", "", "info")
+        return false
+    }
+    if (description.length <= 0) {
+        console.log("no description");
+        Swal.fire("Please Enter Description", "", "info")
+        return false
+    }
+    return true
+}
+
+function adduploadbtn() {
+    const media = document.getElementById("Media")
+
+    console.log("media", media.children.length);
+    var count = 0 + media.children.length
+    media.innerHTML += `
+    
+        <div class="input-group" id="uploadgroup${count}">
+            <input name="file" id="uploadfile${count}" type="file" class="form-control">
+            <div id="submit" class="btn btn-outline-secondary" onclick="upload(${count})" text="Upload">Upload</div>
+        </div>
+    
+    `
+}
+
+async function upload(count) {
+    const file = document.getElementById(`uploadfile${count}`);
+
+    const fr = new FileReader();
+    fr.readAsArrayBuffer(file.files[0]);
+    fr.onload = f => {
+        loading(count)
+        const url = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec";  // <--- Please set the URL of Web Apps.
+        // https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?
+        const qs = new URLSearchParams({ filename: file.files[0].name, mimeType: file.files[0].type });
+        fetch(`${url}?${qs}`, {
+            method: "POST", body: JSON.stringify([...new Int8Array(f.target.result)]), redirect: 'follow', headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            },
+        })
+            .then(res => res.json())
+            .then(e => checkresult(e, count))  // <--- You can retrieve the returned value here.
+            .catch(err => handlerror("upload", err));
+    }
+}
+
+
+function loading(count) {
+    const file = document.getElementById(`uploadgroup${count}`);
+    document.getElementById(`submitbtn`).setAttribute("disabled", "disabled");
+    file.innerHTML =
+        `
+    <div class="loader"></div>
+    `
+}
+
+function checkresult(result, count) {
+    document.getElementById(`uploadgroup${count}`).innerHTML = '';
+    if (result.fileUrl) {
+        medialist.push(result)
+        // sessionStorage.setItem("medialist",JSON.stringify(medialist))
+        displayuploads()
+        document.getElementById(`submitbtn`).removeAttribute("disabled");
+    } else {
+        file.innerHTML =
+            `
+    <div>${result}</div>
+    `
+    }
+}
+
+function displayuploads() {
+    const files = document.getElementById(`Media`);
+    medialist.forEach(i => {
+        files.innerHTML += `
+        <div class="input-group mb-3">
+            <span  class="form-control"><a href="${i.fileUrl}" target="_blank">${i.filename}</a></span>
+            <button class="btn btn-outline-secondary" type="button" onclick="deletefile('${i.fileId}')"><img class="del"
+                    src="./assets/img/delete.png" alt="delete" srcset=""></button>
+        </div>
+        `
+    })
+}
+
+async function deletefile(fileId) {
+    data = {
+        url: v300,
+        params: {
+            'code': 'deleteFile',
+            'fileId': fileId
+        }
+    }
+    const query = encodeQuery(data)
+    const response = await fetch(query);
+    const res = await response.json();
+    setactivedomains(res)
+}
+
+/* PP Upload form  */
+
 /* Active filters */
 let domainfilteractive = null;
 let programfilteractive = null;
@@ -404,7 +729,7 @@ function applyfilter() {
     console.log('GPP', GPP);
     const PSList = document.getElementById("PSList")
     PSList.innerHTML = ""
-    console.log("activefilter",activefilter);
+    console.log("activefilter", activefilter);
     filteredPP = []
     /* 3 filters active */
     if (activefilter.status != "Clear Filter" && activefilter.program != "Clear Filter" && activefilter.domain != "Clear Filter") {
