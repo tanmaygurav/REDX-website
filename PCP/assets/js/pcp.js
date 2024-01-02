@@ -24,6 +24,7 @@ function onloadfacultyhome() {
 
 function onloadstudenthome() {
     /* TODO */
+    verifyuser()
     displayusername()
     getPPbyemail()
     getactivedomains()
@@ -116,9 +117,9 @@ async function getnewrequests() {
 async function getPPbyemail() {
     const list = document.getElementById("PSList");
     list.innerHTML = `<h4>Loading Please wait...</h4>`;
-    const user = JSON.parse(sessionStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"));
     // console.log("user", user.user);
-    const email = user.email
+    const email = user.email;
 
     data = {
         url: v300,
@@ -126,115 +127,23 @@ async function getPPbyemail() {
             'code': 'email',
             'email': email
         }
-    }
-    const query = encodeQuery(data)
+    };
+    const query = encodeQuery(data);
     // console.log("query", query)
     const res = await fetch(query);
     const PS = await res.json();
-    // console.log("res", PS)
+    console.log("res", res.status);
     if (res.status != 200) alert("Request returned status code", res.status);
     if (res.status === 200) {
+        GPP = PS
         list.innerHTML = ""
-        if (PS.length == 0) list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
+        if (GPP.length == 0) list.innerHTML = `<h1>All your Uploaded Pain Points will be displayed here</h1>`
         else {
-            PS.forEach(i => {
-                const checkboxId = `check-${i.uuid}`;
-                const spinId = `spin-${i.uuid}`
-
-                const formattedDate = formatTimestamp(`${i.timestamp}`);
-
-                // console.log(`${i.timestamp}`)
-                // console.log(formattedDate)
-
-                if (!i.tag) {
-                    list.innerHTML += `
-                <div id="${i.uuid}" class="flex-container">
-                    <div class="row-tick">
-                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;">
-                        <div class="loader" id="${spinId}" style="display: none;"></div>
-                    </div>
-                    <div class="row-title-bg">
-                        <div class="row-title-ps-title">
-                            ${i.title}
-                        </div>
-                        <div class="row-title-ps-domain">
-                            ${i.domain}
-                        </div>
-                        <div class="row-title-ps-number">
-                            ${i.uuid}
-                            <div class="row-title-ps-time">${formattedDate}</div>
-                        </div>
-                    </div>
-                    <div class="row-desc-bg">
-                        <div class="row-desc-ps-desc">
-                            ${i.description}
-                        </div>
-                    </div>
-                    <div class="row-sol-bg">
-                        <div class="row-sol-ps-sol">
-                            ${i.solution}
-                        </div>
-                    </div>
-                    <div class="row-img-bg">
-                        <div class="row-img-flex">
-                            <div class="row-img-view-picture-icon"></div>
-                            <div class="row-img-info-icon"></div>
-                            <div class="row-img-add-comment-icon"></div>
-                        </div>
-                        <div class="row-img-font">
-                            View More
-                        </div>
-                    </div>
-                </div>
-                `;
-                } else if (i.tag === "true") {
-                    list.innerHTML += `
-                <div id="${i.uuid}" class="flex-container">
-                    <div class="row-tick">
-                        <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;" checked>
-                        <div class="loader" id="${spinId}" style="display: none;"></div>
-                    </div>
-                    <div class="row-title-bg">
-                        <div class="row-title-ps-title">
-                            ${i.title}
-                        </div>
-                        <div class="row-title-ps-domain">
-                            ${i.domain}
-                        </div>
-                        <div class="row-title-ps-number">
-                            ${i.uuid}
-                            <div class="row-title-ps-time">${formattedDate}</div>
-                        </div>
-                    </div>
-                    <div class="row-desc-bg">
-                        <div class="row-desc-ps-desc">
-                            ${i.description}
-                        </div>
-                    </div>
-                    <div class="row-sol-bg">
-                        <div class="row-sol-ps-sol">
-                            ${i.solution}
-                        </div>
-                    </div>
-                    <div class="row-img-bg">
-                        <div class="row-img-flex">
-                            <div class="row-img-view-picture-icon"></div>
-                            <div class="row-img-info-icon"></div>
-                            <div class="row-img-add-comment-icon"></div>
-                        </div>
-                        <div class="row-img-font">
-                            View More
-                        </div>
-                    </div>
-                </div>
-                `
-                } else {
-                }
-            })
+            renderpp()
         }
 
-    }
-}
+    };
+};
 
 
 async function getactivedomains() {
@@ -367,7 +276,7 @@ function renderfilters() {
 
 function renderpp() {
     const user = JSON.parse(sessionStorage.getItem('user'))
-    // console.log(user);
+    console.log("renderpp", user.access_status);
     if (user.access_status == "ADMIN" || user.access_status == "FACULTY") renderfacultypp()
     if (user.access_status == "STUDENT") renderstudentpp()
 }
@@ -502,8 +411,86 @@ function renderrequestlist() {
 }
 
 function renderstudentpp() {
-    /* TODO */
-    console.log("renderstudent");
+    const PSList = document.getElementById("PSList")
+    PSList.innerHTML = ""
+    console.log("renderstudentpp", GPP);
+    GPP.forEach(i => {
+
+        const formattedDate = formatTimestamp(`${i.timestamp}`);
+        PSList.innerHTML += `
+        <div class="card m-1" onclick=viewfullpagepp("${i.uuid}")>
+            <div class="card-body">
+                <h5 class="card-title">${i.title}</h5>
+                <p class="card-text">${i.domain}</p>
+                <div class="d-flex justify-content-between">
+                    <p class="">${i.uuid}</p>
+                    <p class="">${formattedDate}</p>
+                </div>
+            </div>
+        </div>
+        `
+    })
+
+
+
+}
+
+function viewfullpagepp(uuid) {
+    var pp
+    GPP.forEach(i => {
+        if (i.uuid == uuid) {
+            pp = i
+            return
+        }
+    })
+
+    const PSList = document.getElementById("PSList")
+    const mediadiv = document.getElementById("media")
+    PSList.innerHTML = ""
+    PSList.innerHTML += `
+    <div onclick="renderstudentpp()" class="btn">
+    <img 
+    src="./assets/img/circle-arrow-left-solid.svg" 
+    alt="Back to Pain PointList" 
+    style="height: 2rem; width: 2rem;">
+    </div>
+    <div class="d-flex justify-content-between ">
+        <div>
+            <div id="P-title" class="h4 title-right">${pp.title}</div>
+            <div id="P-domain" class="domain-right">${pp.domain}</div>
+        </div>
+    </div>
+        
+    <div class="d-flex flex-column p-2">
+        <div class="title">Description</div>
+        <div class="description" id="description">
+        ${pp.description}
+        </div>
+    </div>
+    <div class="d-flex flex-column p-2">
+        <div class="title">Solution</div>
+        <div class="description" id="solution">
+        ${pp.solution}
+        </div>
+    </div>
+    <div class="p-2" id="media">
+        <h5>Media</h5>
+    </div>
+        
+    `
+    // render media if present
+    if (pp.media.length != 0) {
+        var media = JSON.parse(pp.media)
+        media.forEach(i => {
+            mediadiv.innerHTML += `
+            <a class="p-1 media-card btn" href="${i.fileUrl}" target="_blank">
+                <div class="title">${i.filename}</div>
+            </a>
+            `
+        })
+
+        // TODO: render remarks if present
+    }
 }
 /* show on page functions */
 
@@ -834,7 +821,7 @@ function formatTimestamp(timestamp) {
     hours = hours ? hours : 12;
 
     // Format the string
-    const formattedDate = `${day}/${month}/${year}; ${hours}:${minutes} ${ampm}`;
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
 
     return formattedDate;
 }
