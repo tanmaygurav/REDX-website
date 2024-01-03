@@ -16,6 +16,12 @@ var userrequestlist = []
 /* Global states */
 
 /* Onpage load triggers */
+if (!window.location.href=="/pcpauth") {
+    if (!window.location.href=="/register") {
+        verifyuser()
+    }
+}
+
 function onloadfacultyhome() {
     verifyuser()
     getPP()
@@ -847,7 +853,7 @@ function verifyuser() {
         // var displayName = document.getElementById("profile-name")
         // displayName.innerText = user.name
     } else {
-        alert("Could not fetch user, Please try Logining IN again or use a different browser")
+        alert("Session Expired, Please try Logining IN again or use a different browser")
         window.location = "/PCP/pcpauth.html"
     }
 }
