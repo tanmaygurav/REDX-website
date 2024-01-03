@@ -74,7 +74,7 @@
             color: #333333;
         }
 
-        button {
+        .button {
             width: 50%;
             padding: 10px;
             background-color: hwb(354 14% 15%);
@@ -135,7 +135,7 @@
             <form id="login-form">
                 <input id="login-email" name="email" type="text" placeholder="Email" required>
                 <input id="login-password" name="password" type="password" placeholder="Password" required>
-                <button id="loginbtn" type="button" onclick="login()">Login</button>
+                <button id="loginbtn" class="button" type="button" onclick="login()">Login</button>
             </form>
             <br>
             <br>
@@ -148,6 +148,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/js/pcp.js"></script>
 
     <script>
         function encodeQuery(data) {
@@ -167,8 +168,13 @@
         function disableloginbtn() {
             // enable login button
             const loginbtn = document.getElementById("loginbtn")
-            loginbtn.setAttribute("disabled",true)
+            loginbtn.setAttribute("disabled", true)
             loginbtn.classList.add("disabled")
+        }
+
+        function validateFormLogin(email, password) {
+            if (!email || !/^\"?[\w-_\.]*\"?@welingkar\.org$/.test(email)) return "Please enter a valid Welingkar email address";
+            if (!password) return "Please enter a Password"
         }
 
         async function login() {
@@ -179,6 +185,11 @@
             var email = document.getElementById("login-email").value
             var password = document.getElementById("login-password").value
 
+            const form = validateFormLogin(email, password)
+            if (form) {
+                swal.fire("Error", form, "error")
+                return
+            }
             // console.log("password", password);
             var encrypted = CryptoJS.SHA3(password);
             // console.log("encrypted", encrypted.words);
@@ -226,7 +237,6 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./assets/js/pcp.js"></script>
 </body>
 
 </html>

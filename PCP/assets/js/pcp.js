@@ -43,6 +43,7 @@ function onloadrequests() {
 }
 
 function accessrequests() {
+    // TODO: secure routes from backend
     verifyuser()
     if (user) {
         if (user.access_status == "ADMIN") {

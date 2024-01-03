@@ -75,7 +75,7 @@
             color: #333333;
         }
 
-        button {
+        .button {
             width: 50%;
             padding: 10px;
             background-color: hwb(354 14% 15%);
@@ -139,7 +139,7 @@
                 <input id="signup-password" name="password" type="password" placeholder="Password" required>
                 <input id="signup-id" name="id" type="id" placeholder="Student ID / Roll No." required>
                 <input id="signup-program" name="program" type="text" placeholder="Program Eg BD1 2023-2025" required>
-                <button type="button" onclick="register()">Register</button>
+                <button id="signupbtn" class="button" type="button" onclick="register()">Register</button>
                 <br>
                 <a class="btn" href="./pcpauth.html">Login</a>
             </form>
@@ -149,13 +149,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
         integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/js/pcp.js"></script>
 
 
     <script>
-        const v200 = "https://script.google.com/macros/s/AKfycbw9xdNLGkgYPJJ5eEdnDpYJ3tMYJj5pawthFfceoZ-A6bEH7CEXUje6CpO5uQRyrXodjg/exec?";
-        const v300 = "https://script.google.com/macros/s/AKfycbzPSXRntXbqVZ-tfmJazl44EkTU8sCsv7xT0wQJKDI_DtQHYqNw2wvBKML_HJjRstcC/exec?";
         function encodeQuery(data) {
             let query = data.url
             for (let d in data.params)
@@ -164,15 +163,42 @@
             return query.slice(0, -1)
         }
 
+        function enablesignupbtn() {
+            // enable login button
+            const signupbtn = document.getElementById("signupbtn")
+            signupbtn.removeAttribute("disabled")
+            signupbtn.classList.remove("disabled")
+        }
+        function disablesignupbtn() {
+            // enable login button
+            const signupbtn = document.getElementById("signupbtn")
+            signupbtn.setAttribute("disabled", true)
+            signupbtn.classList.add("disabled")
+        }
+
+        function validateFormSignup(email, password, name, id, program) {
+            if (!email || !/^\"?[\w-_\.]*\"?@welingkar\.org$/.test(email)) return "Please enter a valid Welingkar email address";
+            if (!password) return "Please enter a Password"
+            if (!name) return "Please enter a name"
+            if (!id) return "Please enter Student Roll number or Employee Id"
+            if (!program) return "Please enter a program or department"
+        }
 
 
         async function register() {
+            disablesignupbtn()
             swal.fire("Please wait")
             var email = document.getElementById("signup-email").value
             var password = document.getElementById("signup-password").value
             var name = document.getElementById("signup-name").value
             var id = document.getElementById("signup-id").value
             var program = document.getElementById("signup-program").value
+
+            const form = validateFormSignup(email, password, name, id, program)
+            if (form) {
+                swal.fire("Error", form, "error")
+                return
+            }
 
             console.log("password", password);
             var encrypted = CryptoJS.SHA3(password);
@@ -189,12 +215,22 @@
                 }
             }
             const query = encodeQuery(data)
+            console.log("query", query);
             const response = await fetch(query);
             const res = await response.json();
-            if (response.status != 200) alert("Request returned status code", res.status);
+            if (response.status != 200) {
+                enablesignupbtn()
+                alert("Request returned status code", res.status);
+            }
             if (response.status === 200) {
-                if (res.error) swal.fire("Error", res.status, "error");
-                else swal.fire("Success!", "Please wait while Kaustubh Sir approve your request", "success");
+                if (res.error) {
+                    enablesignupbtn()
+                    swal.fire("Error", res.status, "error");
+                }
+                else {
+                    enablesignupbtn()
+                    swal.fire("Success!", "Please wait while Kaustubh Sir approves your request", "success");
+                }
             }
         }
 
