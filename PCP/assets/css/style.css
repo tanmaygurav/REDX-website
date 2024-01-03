@@ -332,12 +332,15 @@
 }
 
 .fixedButton {
+    
     position: fixed;
     bottom: 0px;
     right: 0px;
     padding: 30px;
 }
-
+.hidden{
+    display: none;
+}
 .roundedFixedBtn {
     height: 60px;
     line-height: 80px;

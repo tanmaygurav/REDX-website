@@ -411,6 +411,10 @@ function renderrequestlist() {
 }
 
 function renderstudentpp() {
+    // render add btn
+    const addbtn = document.getElementsByClassName("fixedButton")
+    addbtn[0].classList.remove("hidden")
+
     const PSList = document.getElementById("PSList")
     PSList.innerHTML = ""
     console.log("renderstudentpp", GPP);
@@ -436,6 +440,7 @@ function renderstudentpp() {
 }
 
 function viewfullpagepp(uuid) {
+    // get the item clicked data form local global variable
     var pp
     GPP.forEach(i => {
         if (i.uuid == uuid) {
@@ -444,8 +449,11 @@ function viewfullpagepp(uuid) {
         }
     })
 
+    // hide add btn
+    const addbtn = document.getElementsByClassName("fixedButton")
+    addbtn[0].classList.add("hidden")
+
     const PSList = document.getElementById("PSList")
-    const mediadiv = document.getElementById("media")
     PSList.innerHTML = ""
     PSList.innerHTML += `
     <div onclick="renderstudentpp()" class="btn">
@@ -474,12 +482,17 @@ function viewfullpagepp(uuid) {
         </div>
     </div>
     <div class="p-2" id="media">
-        <h5>Media</h5>
-    </div>
         
+    </div>
+    <div class="p-2" id="remarkssection">
+        
+    </div>
     `
     // render media if present
+    const mediadiv = document.getElementById("media")
+
     if (pp.media.length != 0) {
+        mediadiv.innerHTML=`<h5>Media</h5>`
         var media = JSON.parse(pp.media)
         media.forEach(i => {
             mediadiv.innerHTML += `
