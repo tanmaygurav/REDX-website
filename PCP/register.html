@@ -197,6 +197,7 @@
             const form = validateFormSignup(email, password, name, id, program)
             if (form) {
                 swal.fire("Error", form, "error")
+                enablesignupbtn()
                 return
             }
 

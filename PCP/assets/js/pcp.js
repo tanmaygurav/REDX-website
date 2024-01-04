@@ -16,8 +16,8 @@ var userrequestlist = []
 /* Global states */
 
 /* Onpage load triggers */
-if (!window.location.href=="/pcpauth") {
-    if (!window.location.href=="/register") {
+if (!window.location.href == "/pcpauth") {
+    if (!window.location.href == "/register") {
         verifyuser()
     }
 }
@@ -38,6 +38,7 @@ function onloadstudenthome() {
 }
 
 function onloadrequests() {
+    verifyuser()
     displayusername()
     getnewrequests()
 }
@@ -243,7 +244,7 @@ async function handlenewuserrequest(btn) {
     if (res.status === 200) {
         if (PS.error) Swal.fire("An Error Occured", PS.error, "error")
         else {
-            Swal.close()
+            Swal.fire("Success!", "Accepted Successfully", "success");
             getnewrequests()
         }
     }
@@ -329,7 +330,7 @@ function renderfacultypp() {
                             ${i.solution}
                         </div>
                     </div>
-                    <div class="row-img-bg">
+                    <div class="row-img-bg" onclick="renderviewMore('${i.uuid}')">
                         <div class="row-img-flex">
                             <div class="row-img-view-picture-icon"></div>
                             <div class="row-img-info-icon"></div>
@@ -370,7 +371,7 @@ function renderfacultypp() {
                             ${i.solution}
                         </div>
                     </div>
-                    <div class="row-img-bg">
+                    <div class="row-img-bg" onclick="renderviewMore('${i.uuid}')">
                         <div class="row-img-flex">
                             <div class="row-img-view-picture-icon"></div>
                             <div class="row-img-info-icon"></div>
@@ -499,7 +500,7 @@ function viewfullpagepp(uuid) {
     const mediadiv = document.getElementById("media")
 
     if (pp.media.length != 0) {
-        mediadiv.innerHTML=`<h5>Media</h5>`
+        mediadiv.innerHTML = `<h5>Media</h5>`
         var media = JSON.parse(pp.media)
         media.forEach(i => {
             mediadiv.innerHTML += `
@@ -512,10 +513,79 @@ function viewfullpagepp(uuid) {
         // TODO: render remarks if present
     }
 }
+
+function renderviewMore(uuid) {
+    // get the item clicked data form local global variable
+    var pp
+    GPP.forEach(i => {
+        if (i.uuid == uuid) {
+            pp = i
+            return
+        }
+    })
+    const PSList = document.getElementById("PSList")
+    PSList.innerHTML = ""
+    PSList.innerHTML += `
+        <div onclick="renderfacultypp()" class="btn">
+        <img 
+        src="./assets/img/circle-arrow-left-solid.svg" 
+        alt="Back to Pain PointList" 
+        style="height: 2rem; width: 2rem;">
+        </div>
+        <div class="d-flex justify-content-between ">
+            <div>
+                <div id="P-title" class="h4 title-right">${pp.title}</div>
+                <div id="P-domain" class="domain-right">${pp.domain}</div>
+            </div>
+        </div>
+            
+        <div class="d-flex flex-column p-2">
+            <div class="title">Description</div>
+            <div class="description" id="description">
+            ${pp.description}
+            </div>
+        </div>
+        <div class="d-flex flex-column p-2">
+            <div class="title">Solution</div>
+            <div class="description" id="solution">
+            ${pp.solution}
+            </div>
+        </div>
+        <div class="p-2" id="media">
+            
+        </div>
+        <div class="p-2" id="remarkssection">
+            
+        </div>
+        `
+    // render media if present
+    const mediadiv = document.getElementById("media")
+
+    if (pp.media.length != 0) {
+        mediadiv.innerHTML = `<h5>Media</h5>`
+        var media = JSON.parse(pp.media)
+        media.forEach(i => {
+            mediadiv.innerHTML += `
+                <a class="p-1 media-card btn" href="${i.fileUrl}" target="_blank">
+                    <div class="title">${i.filename}</div>
+                </a>
+                `
+        })
+
+        // TODO: render remarks if present
+    }
+}
 /* show on page functions */
 
 /* PP Upload form  */
-
+/* 
+// TODO:
+1. Delete file does not work
+2. description is not uploaded
+1. disable upload until there is file present in the block
+2. clear indicators on file upload step
+3. loader after submit pp
+ */
 const form = document.getElementById('ppform');
 function ppformsubmit() {
     console.log("Submit clicked");
@@ -637,7 +707,7 @@ async function upload(count) {
             },
         })
             .then(res => res.json())
-            .then(e => checkresult(e, count))  // <--- You can retrieve the returned value here.
+            .then(e => checkresult(e, count))  
             .catch(err => handlerror("upload", err));
     }
 }
@@ -848,7 +918,7 @@ function formatTimestamp(timestamp) {
 
 function verifyuser() {
     user = JSON.parse(sessionStorage.getItem("user"))
-    // console.log("user", user);
+    console.log("user", user);
     if (user) {
         displayusername()
         // var displayName = document.getElementById("profile-name")

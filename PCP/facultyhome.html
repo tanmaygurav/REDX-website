@@ -14,6 +14,8 @@
 
 
 <body onload="onloadfacultyhome()">
+
+<!-- <body> -->
     <!-- NavBar -->
     <nav class="top-line navbar">
         <div class="d-flex container-fluid justify-content-between mx-5">
@@ -91,69 +93,42 @@
     <div id="PSList">
         <h1>Loading please wait ..</h1>
         <!-- Test view -->
-        <!-- <div id="PSLIP0001" class="flex-container">
+        <!-- <div id="${i.uuid}" class="flex-container">
             <div class="row-tick">
-                <input onclick="tag(this)" type="checkbox" value="P0001" checked />
+                <input onclick="tag(this)" id="${checkboxId}" type="checkbox" value="${i.uuid}" style="display: block;">
+                <div class="loader" id="${spinId}" style="display: none;"></div>
             </div>
             <div class="row-title-bg">
-                <div class="row-title-ps-title">Pain Point - Title</div>
-                <div class="row-title-ps-domain">Domain</div>
+                <div class="row-title-ps-title">
+                    ${i.title}
+                </div>
+                <div class="row-title-ps-domain">
+                    ${i.domain}
+                </div>
                 <div class="row-title-ps-number">
-                    P0001
-                    <div class="row-title-ps-time">16/Oct/2023; 09:30 PM</div>
+                    ${i.uuid}
+                    <div class="row-title-ps-time">${formattedDate}</div>
                 </div>
             </div>
             <div class="row-desc-bg">
-                <div class="row-desc-ps-desc">Description</div>
+                <div class="row-desc-ps-desc">
+                    ${i.description}
+                </div>
             </div>
             <div class="row-sol-bg">
                 <div class="row-sol-ps-sol">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Pharetra
-                    vel turpis nunc eget lorem dolor sed viverra ipsum. Platea dictumst
-                    quisque sagittis purus sit amet volutpat consequat. Neque sodales ut
-                    etiam sit amet. Morbi tristique senectus et netus. Laoreet sit amet
-                    cursus sit amet dictum. Feugiat vivamus at augue eget arcu dictum.
-                    Bibendum ut tristique et egestas quis. Id interdum velit laoreet id
-                    donec ultrices. Sem fringilla ut morbi tincidunt augue interdum
-                    velit euismod in.
+                    ${i.solution}
                 </div>
             </div>
-            <div class="row-img-bg">
+            <div class="row-img-bg" onclick="renderviewMore('${i.uuid}')">
                 <div class="row-img-flex">
                     <div class="row-img-view-picture-icon"></div>
                     <div class="row-img-info-icon"></div>
                     <div class="row-img-add-comment-icon"></div>
                 </div>
-                <div class="row-img-font">View More</div>
-            </div>
-        </div>
-
-        <div id="${res.uuid}" class="flex-container">
-            <div class="row-tick">
-                <input onclick="tag(this)" type="checkbox" value="${res.uid}" checked />
-            </div>
-            <div class="row-title-bg">
-                <div class="row-title-ps-title">${res.title}</div>
-                <div class="row-title-ps-domain">${res.domain}</div>
-                <div class="row-title-ps-number">
-                    ${res.uuid}
-                    <div class="row-title-ps-time">16/Oct/2023; 09:30 PM</div>
+                <div class="row-img-font">
+                    View More
                 </div>
-            </div>
-            <div class="row-desc-bg">
-                <div class="row-desc-ps-desc">${res.description}</div>
-            </div>
-            <div class="row-sol-bg">
-                <div class="row-sol-ps-sol">${res.solution}</div>
-            </div>
-            <div class="row-img-bg">
-                <div class="row-img-flex">
-                    <div class="row-img-view-picture-icon"></div>
-                    <div class="row-img-info-icon"></div>
-                    <div class="row-img-add-comment-icon"></div>
-                </div>
-                <div class="row-img-font">View More</div>
             </div>
         </div> -->
     </div>
