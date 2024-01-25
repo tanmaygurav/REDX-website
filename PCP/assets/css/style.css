@@ -7,21 +7,20 @@
 }
 
 .top-line-type {
-    padding-top: 1.19rem;
-    padding-left: 7.69rem;
-    width: 25rem;
+    width: auto;
     height: auto;
     flex-shrink: 0;
-    color: #556270;
-    font-family: Actor;
-    font-size: 2rem;
+    color: var(--Heading-Text, #8A4EC7);
+    font-family: Montserrat;
+    font-size: 1.9375rem;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: normal;
+    border-bottom: 0.125rem solid #31AE0E;
 }
 
 .top-line-type::before {
-    content: "Pain Points Collection Portal";
+    content: "pain points collection portal";
 }
 
 .filter-type {
@@ -40,8 +39,8 @@
     margin-left: 0.62rem;
     margin-right: 0.63rem;
     width: auto;
-    height: 0.0625rem;
-    background: rgba(217, 35, 52, 0.50);
+    height: 0.09375rem;
+    background: rgba(49, 174, 14, 1);
 }
 
 .flex-container {
@@ -258,11 +257,6 @@
 }
 
 @media (max-width: 768px) {
-    .top-line-type {
-        padding-left: 2rem;
-        width: fit-content;
-        font-size: 1.5rem;
-    }
 
     .top-line-type::before {
         content: "PPCP";
